@@ -103,8 +103,8 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="bg-gradient-to-r from-evo-teal-50 to-evo-red-50 border-b border-evo-teal-200 p-4">
+    <div className="h-full flex flex-col">
+      <div className="bg-gradient-to-r from-evo-teal-50 to-evo-red-50 border-b border-evo-teal-200 p-4 flex-shrink-0">
         <div className="flex items-start space-x-3">
           <div className="w-6 h-6 bg-evo-teal-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
             <span className="text-white font-bold text-xs">i</span>
@@ -115,7 +115,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
         </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-0">
         {conversationData.messages.length === 0 && (
           <div className="text-center py-12">
             <div className="flex items-center justify-center mx-auto mb-4">
@@ -173,7 +173,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t border-gray-200 p-4 bg-white">
+      <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0">
         <div className="flex space-x-2">
           <Input
             value={inputMessage}

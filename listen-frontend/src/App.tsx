@@ -29,34 +29,32 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex">
-      <div className="flex-1 flex flex-col">
-        <header className="evo-gradient-bg border-b border-evo-red-600 px-6 py-4 shadow-lg">
-          <div className="flex items-center space-x-3">
-            <img 
-              src="/accessevo.png" 
-              alt="Access Group" 
-              className="h-10 w-auto object-contain drop-shadow-sm"
-            />
-            <div>
-              <h1 className="text-xl font-bold text-white drop-shadow-sm">Project LISTEN</h1>
-              <p className="text-sm text-white/90 font-medium">AI Discovery Bot powered by Access EVO</p>
-            </div>
+    <div className="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col overflow-hidden">
+      <header className="evo-gradient-bg border-b border-evo-red-600 px-6 py-4 shadow-lg flex-shrink-0">
+        <div className="flex items-center space-x-3">
+          <img 
+            src="/accessevo.png" 
+            alt="Access Group" 
+            className="h-10 w-auto object-contain drop-shadow-sm"
+          />
+          <div>
+            <h1 className="text-xl font-bold text-white drop-shadow-sm">Project LISTEN</h1>
+            <p className="text-sm text-white/90 font-medium">AI Discovery Bot powered by Access EVO</p>
           </div>
-        </header>
-        
-        <main className="flex-1 flex">
-          <div className="flex-1">
-            <ChatInterface 
-              conversationData={conversationData}
-              updateConversationData={updateConversationData}
-            />
-          </div>
-          <div className="w-80 border-l border-gray-200">
-            <Sidebar conversationData={conversationData} />
-          </div>
-        </main>
-      </div>
+        </div>
+      </header>
+      
+      <main className="flex-1 flex min-h-0">
+        <div className="flex-1 min-w-0">
+          <ChatInterface 
+            conversationData={conversationData}
+            updateConversationData={updateConversationData}
+          />
+        </div>
+        <div className="w-80 border-l border-gray-200 flex-shrink-0">
+          <Sidebar conversationData={conversationData} />
+        </div>
+      </main>
     </div>
   )
 }

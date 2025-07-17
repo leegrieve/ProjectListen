@@ -102,7 +102,7 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
   ]
 
   return (
-    <div className="h-full bg-gradient-to-b from-gray-50 to-gray-100 p-4 space-y-4 overflow-y-auto">
+    <div className="h-full bg-gradient-to-b from-gray-50 to-gray-100 p-4 space-y-4 overflow-y-auto flex flex-col">
       <Card className="evo-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center space-x-2">
