@@ -171,3 +171,126 @@ Remember: Your goal is to uncover pain points through conversation, not to immed
             key_insights=key_insights,
             flight_path_progress=progress
         )
+    
+    def get_business_summary(self, conversation_id: str) -> Optional[Dict]:
+        """Get structured business summary for Access Group takeaway"""
+        conversation = self.conversations.get(conversation_id)
+        if not conversation:
+            return None
+        
+        relevant_challenges = self.product_matcher.get_relevant_challenges(conversation.discovered_pain_points)
+        
+        # Structure pain points with solutions
+        pain_point_solutions = []
+        for pain_point in conversation.discovered_pain_points:
+            pain_point_name = pain_point.replace('_', ' ').title()
+            
+            # Find matching challenges and solutions
+            matching_challenges = [c for c in relevant_challenges 
+                                 if any(keyword in c.get('customer_pain_point', '').lower() 
+                                       for keyword in self.product_matcher.pain_point_keywords.get(pain_point, []))]
+            
+            solutions = []
+            for challenge in matching_challenges:
+                if challenge.get('product'):
+                    solution = {
+                        "product": challenge.get('product'),
+                        "how_it_helps": challenge.get('customer_pain_point', ''),
+                        "business_impact": challenge.get('challenge_category', ''),
+                        "priority": self._calculate_priority(pain_point, challenge)
+                    }
+                    solutions.append(solution)
+            
+            pain_point_solutions.append({
+                "pain_point": pain_point_name,
+                "category": pain_point,
+                "solutions": solutions
+            })
+        
+        delivery_plan = self._create_delivery_plan(pain_point_solutions)
+        
+        return {
+            "conversation_id": conversation_id,
+            "customer_business_summary": {
+                "total_pain_points": len(conversation.discovered_pain_points),
+                "conversation_length": len(conversation.messages),
+                "discovery_completeness": self._assess_discovery_completeness(conversation)
+            },
+            "identified_pain_points": pain_point_solutions,
+            "recommended_flight_path": delivery_plan,
+            "next_steps": self._generate_next_steps(conversation, pain_point_solutions),
+            "generated_at": datetime.now().isoformat()
+        }
+    
+    def _calculate_priority(self, pain_point: str, challenge: Dict) -> str:
+        """Calculate priority based on pain point type and business impact"""
+        high_priority_points = ["revenue_optimization", "operational_efficiency"]
+        medium_priority_points = ["staff_scheduling", "booking_management"]
+        
+        if pain_point in high_priority_points:
+            return "High"
+        elif pain_point in medium_priority_points:
+            return "Medium"
+        else:
+            return "Low"
+    
+    def _create_delivery_plan(self, pain_point_solutions: List[Dict]) -> Dict:
+        """Create prioritized delivery plan based on pain points"""
+        phases = {
+            "Phase 1 - Foundation": [],
+            "Phase 2 - Optimization": [],
+            "Phase 3 - Enhancement": []
+        }
+        
+        for pain_solution in pain_point_solutions:
+            for solution in pain_solution.get("solutions", []):
+                priority = solution.get("priority", "Low")
+                
+                if priority == "High":
+                    phases["Phase 1 - Foundation"].append({
+                        "system": solution.get("product"),
+                        "addresses": pain_solution.get("pain_point"),
+                        "business_value": solution.get("how_it_helps"),
+                        "implementation_priority": "Immediate"
+                    })
+                elif priority == "Medium":
+                    phases["Phase 2 - Optimization"].append({
+                        "system": solution.get("product"),
+                        "addresses": pain_solution.get("pain_point"),
+                        "business_value": solution.get("how_it_helps"),
+                        "implementation_priority": "3-6 months"
+                    })
+                else:
+                    phases["Phase 3 - Enhancement"].append({
+                        "system": solution.get("product"),
+                        "addresses": pain_solution.get("pain_point"),
+                        "business_value": solution.get("how_it_helps"),
+                        "implementation_priority": "6-12 months"
+                    })
+        
+        return phases
+    
+    def _assess_discovery_completeness(self, conversation: ConversationState) -> str:
+        """Assess how complete the discovery process is"""
+        if len(conversation.discovered_pain_points) >= 3 and len(conversation.messages) >= 6:
+            return "Comprehensive"
+        elif len(conversation.discovered_pain_points) >= 2:
+            return "Good"
+        else:
+            return "Initial"
+    
+    def _generate_next_steps(self, conversation: ConversationState, pain_point_solutions: List[Dict]) -> List[str]:
+        """Generate recommended next steps for Access Group"""
+        next_steps = []
+        
+        if len(conversation.discovered_pain_points) < 3:
+            next_steps.append("Continue discovery conversation to uncover additional pain points")
+        
+        if pain_point_solutions:
+            next_steps.append("Schedule technical demonstration of recommended solutions")
+            next_steps.append("Conduct detailed requirements gathering for Phase 1 systems")
+        
+        next_steps.append("Assign dedicated Access Group account manager for implementation planning")
+        next_steps.append("Develop custom implementation timeline based on business priorities")
+        
+        return next_steps

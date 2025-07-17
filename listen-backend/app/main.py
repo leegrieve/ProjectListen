@@ -169,6 +169,25 @@ def export_all_conversations():
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="Internal server error")
 
+@app.get("/api/conversations/{conversation_id}/business-summary")
+def get_business_summary(conversation_id: str):
+    """Get structured business summary for Access Group takeaway"""
+    try:
+        summary = conversation_service.get_business_summary(conversation_id)
+        
+        if not summary:
+            raise HTTPException(status_code=404, detail="Conversation not found")
+        
+        return summary
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error in business summary endpoint: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 @app.get("/api/health")
 def health_check():
     """Health check endpoint"""
