@@ -81,7 +81,34 @@ The bot guides customers through a structured discovery journey with visual indi
 - **Info Box**: Consultative guidance at top of chat
 - **CS AI Integration**: Customer Success AI themed elements
 
-### 6. **Conversation Intelligence & Export**
+### 6. **Intelligent Conversation Wrap-Up**
+**NEW**: Smart conversation endings that guide prospects to concrete next steps:
+
+#### **Automatic Wrap-Up Triggers:**
+- **Completion Phrases**: Detects when users express readiness to proceed:
+  - "What's the next step?" / "What's next?"
+  - "This sounds interesting" / "This looks good"
+  - "How much does this cost?" / "Tell me about pricing"
+  - "I need to discuss with my team"
+  - "How do I get started?" / "Can we schedule something?"
+  - Plus 20+ additional completion phrase variations
+
+- **Product Presentation**: Automatically wraps up after recommending all 3 main Access Group products (Collins, RotaReady, Guest WiFi)
+- **Message Count**: Triggers after ~15 messages to prevent overly long conversations
+- **Discovery Completeness**: Activates when sufficient discovery is achieved (3+ pain points, 10+ messages)
+
+#### **Comprehensive Wrap-Up Response Includes:**
+1. **Business Challenge Summary**: Brief recap of discovered pain points
+2. **Recommended Flight Path**: Clear presentation of the 3 key Access Group solutions
+3. **Structured Next Steps**:
+   - Schedule a technical demonstration of recommended solutions
+   - Send discovery report directly via email
+   - Connect with Access Group sales team for pricing discussions
+   - Download complete business summary report from sidebar
+4. **Professional Closing**: "What would be most valuable for you right now?"
+5. **Sidebar Integration**: References downloadable business summary for account manager sharing
+
+### 7. **Conversation Intelligence & Export**
 - Tracks all discovered pain points with categorization
 - Maintains complete conversation history
 - Generates shareable summaries for account managers
@@ -137,6 +164,10 @@ The bot is designed to handle various business scenarios:
 ### Traditional Operations
 **Input**: *"We use paper menus and handwritten orders"*
 **Bot Response**: Recognizes digital transformation opportunity, explores operational efficiency
+
+### Conversation Completion
+**Input**: *"This sounds interesting, what are the next steps?"*
+**Bot Response**: Triggers intelligent wrap-up with business summary, flight path, and structured next steps including demo scheduling, report sending, and sales team connection
 
 ## 🌐 Live Deployment
 
@@ -236,11 +267,20 @@ Potential improvements and extensions:
 
 ## 🆕 Recent Updates (Latest Release)
 
+### Intelligent Conversation Wrap-Up (NEW)
+- **Smart Ending Detection**: Automatically detects when users are ready to proceed with 23+ completion phrases
+- **Multiple Trigger Conditions**: Wraps up after product presentation, message count, or discovery completeness
+- **Structured Conclusions**: Comprehensive wrap-up responses with business summary and clear next steps
+- **Professional Closing**: Guides prospects to concrete actions (demo, report, sales connection)
+- **Sidebar Integration**: References downloadable business summary for seamless account manager handoff
+- **Natural Flow**: Maintains consultative tone while providing actionable next steps
+
 ### Business Summary Integration
 - **Structured Takeaways**: Complete business summary with pain points, solutions, and flight path
 - **Export Functionality**: JSON export endpoints for conversation data and business summaries
 - **Priority Assessment**: Intelligent prioritization of solutions (High/Medium/Low priority)
 - **Implementation Phases**: Three-phase delivery plan (Foundation/Optimization/Enhancement)
+- **Account Manager Ready**: Formatted summaries for immediate Access Group follow-up
 
 ### Enhanced User Experience
 - **Access EVO Branding**: Professional styling with official Access Group colors and logo
@@ -248,12 +288,61 @@ Potential improvements and extensions:
 - **Info Box**: Consultative guidance messaging at top of chat interface
 - **CS AI Integration**: Customer Success AI themed elements and branding
 - **Mobile Optimization**: Improved responsive design for all device types
+- **Natural Language**: Removed emotive actions and stage directions for professional communication
 
 ### Technical Improvements
 - **Robust Error Handling**: Production-ready error management and logging
-- **Enhanced Pain Point Detection**: Expanded keyword mapping for better accuracy
+- **Enhanced Pain Point Detection**: Expanded keyword mapping for better accuracy including paper-based operations
 - **API Expansion**: New endpoints for business intelligence and data export
 - **Performance Optimization**: Improved conversation processing and response times
+- **Data Type Fixes**: Resolved production issues with recommended products handling
+
+## 🎯 How Conversations Finish
+
+Project LISTEN uses intelligent conversation wrap-up functionality to naturally guide prospects toward concrete next steps:
+
+### **When Conversations Wrap Up:**
+1. **User Expresses Interest**: Detects completion phrases like "What's the next step?", "This sounds interesting", "How much does this cost?"
+2. **Product Presentation Complete**: After recommending all 3 main Access Group solutions (Collins, RotaReady, Guest WiFi)
+3. **Sufficient Discovery**: When conversation reaches 15+ messages or achieves good discovery completeness
+4. **Natural Conclusion**: When user asks about pricing, scheduling, or next steps
+
+### **What Happens During Wrap-Up:**
+- **Business Challenge Summary**: Recap of discovered pain points and challenges
+- **Flight Path Presentation**: Clear explanation of recommended Access Group solutions
+- **Structured Next Steps**: Four specific options for moving forward:
+  - Schedule technical demonstration
+  - Receive discovery report via email  
+  - Connect with sales team for pricing
+  - Download business summary from sidebar
+- **Professional Closing**: "What would be most valuable for you right now?"
+- **Account Manager Handoff**: Reference to shareable business summary report
+
+### **Example Wrap-Up Flow:**
+```
+User: "This sounds interesting, what are the next steps?"
+
+Bot: "Based on our conversation about your staffing challenges and paper-based 
+booking system, I've identified some key areas where we can help streamline 
+your operations.
+
+I'd recommend this flight path of solutions:
+1. Collins - Digital booking system to replace your paper processes
+2. RotaReady - Smart staff scheduling that adapts to your seasonal patterns  
+3. Guest WiFi - Additional value-add for your customers
+
+You have several options to move forward:
+1. Schedule a technical demonstration of these solutions
+2. Receive a detailed discovery report via email
+3. Discuss pricing with our Access Group sales team
+4. Download your business summary report from the sidebar
+
+Your business summary is ready to download right now - this can be shared 
+with your Access Group account manager.
+
+I can help you with any of these next steps - what would be most valuable 
+for you right now?"
+```
 
 ## 📋 How to View Business Summary Output
 
