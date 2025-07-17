@@ -81,6 +81,80 @@ Remember: Your goal is to uncover pain points through conversation, not to immed
         """Get conversation by ID"""
         return self.conversations.get(conversation_id)
     
+    def _should_wrap_up_conversation(self, conversation: ConversationState, user_message: str) -> bool:
+        """Determine if conversation should wrap up based on various criteria"""
+        completion_phrases = [
+            "what's the next step",
+            "how much does this cost",
+            "i need to discuss with my team",
+            "this sounds interesting",
+            "what are the costs",
+            "pricing",
+            "how do we proceed",
+            "next steps",
+            "sounds good",
+            "i'm interested",
+            "let's move forward",
+            "schedule a demo",
+            "send me information",
+            "what's next",
+            "how do i get started",
+            "can you send me details",
+            "i'd like to know more",
+            "tell me about pricing",
+            "what would this cost",
+            "how much would it be",
+            "can we schedule something",
+            "i want to move forward",
+            "this looks good"
+        ]
+        
+        user_message_lower = user_message.lower()
+        if any(phrase in user_message_lower for phrase in completion_phrases):
+            return True
+        
+        main_products = ["Collins", "RotaReady", "Guest WiFi"]
+        recommended_product_names = conversation.recommended_products
+        if len([p for p in main_products if any(p in rec for rec in recommended_product_names)]) >= 3:
+            return True
+        
+        if len(conversation.messages) >= 15:
+            return True
+        
+        # Check if we have good discovery completeness and multiple pain points
+        if len(conversation.discovered_pain_points) >= 3 and len(conversation.messages) >= 10:
+            return True
+        
+        return False
+
+    def _build_wrap_up_prompt(self, conversation: ConversationState) -> str:
+        """Build a wrap-up prompt with summary and next steps"""
+        pain_points = ", ".join([pp.replace('_', ' ').title() for pp in conversation.discovered_pain_points])
+        products = ", ".join(conversation.recommended_products)
+        
+        return f"""
+CONVERSATION WRAP-UP MODE:
+You should now wrap up this discovery conversation. The customer has indicated readiness to proceed or we've gathered sufficient information.
+
+DISCOVERED PAIN POINTS: {pain_points}
+RECOMMENDED PRODUCTS: {products}
+
+Your response should include:
+1. A brief summary of what we've discovered about their business challenges
+2. The recommended flight path with our 3 key solutions (Collins, RotaReady, Guest WiFi)
+3. Clear next steps with these specific options:
+   - Schedule a technical demonstration of the recommended solutions
+   - Send the discovery report directly to their email
+   - Connect them with our Access Group sales team for pricing discussions
+   - Download the complete business summary report immediately
+
+End with: "I can help you with any of these next steps - what would be most valuable for you right now?"
+
+Make sure to mention that they can download their business summary report right now from the sidebar, and that this summary can be shared with their Access Group account manager.
+
+Keep it concise, professional, and action-oriented. This is the conclusion of our discovery session.
+"""
+
     def process_message(self, conversation_id: str, user_message: str) -> str:
         """Process user message and return AI response"""
         try:
@@ -111,6 +185,8 @@ Remember: Your goal is to uncover pain points through conversation, not to immed
                 print(f"Error in pain point detection: {e}")
                 pass
             
+            should_wrap_up = self._should_wrap_up_conversation(conversation, user_message)
+            
             messages = []
             for msg in conversation.messages:
                 messages.append({
@@ -118,11 +194,15 @@ Remember: Your goal is to uncover pain points through conversation, not to immed
                     "content": msg.content
                 })
             
+            system_prompt = self.system_prompt
+            if should_wrap_up:
+                system_prompt = self.system_prompt + self._build_wrap_up_prompt(conversation)
+            
             try:
                 response = self.client.messages.create(
                     model="claude-3-5-sonnet-20241022",
                     max_tokens=1000,
-                    system=self.system_prompt,
+                    system=system_prompt,
                     messages=messages
                 )
                 
