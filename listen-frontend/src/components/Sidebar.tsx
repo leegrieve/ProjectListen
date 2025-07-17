@@ -34,11 +34,11 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
   ]
 
   return (
-    <div className="h-full bg-gray-50 p-4 space-y-4 overflow-y-auto">
-      <Card>
+    <div className="h-full bg-gradient-to-b from-gray-50 to-gray-100 p-4 space-y-4 overflow-y-auto">
+      <Card className="evo-card">
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-medium flex items-center space-x-2">
-            <TrendingUp className="w-4 h-4 text-red-600" />
+            <TrendingUp className="w-4 h-4 text-evo-red-500" />
             <span>Flight Path Progress</span>
           </CardTitle>
         </CardHeader>
@@ -51,25 +51,25 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
               
               return (
                 <div key={index} className="flex items-center space-x-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium shadow-sm ${
                     isActive 
-                      ? 'bg-red-600 text-white' 
+                      ? 'bg-evo-red-500 text-white shadow-evo-red-200' 
                       : isCurrent
-                      ? 'bg-red-100 text-red-600 border-2 border-red-600'
+                      ? 'bg-evo-red-100 text-evo-red-600 border-2 border-evo-red-500'
                       : 'bg-gray-200 text-gray-500'
                   }`}>
                     {index + 1}
                   </div>
                   <div className="flex-1">
                     <div className={`text-sm font-medium ${
-                      isActive || isCurrent ? 'text-red-600' : 'text-gray-500'
+                      isActive || isCurrent ? 'text-evo-red-600' : 'text-gray-500'
                     }`}>
                       {stage}
                     </div>
                   </div>
                   {index < flightPathStages.length - 1 && (
-                    <div className={`w-4 h-0.5 ${
-                      isActive ? 'bg-red-600' : 'bg-gray-200'
+                    <div className={`w-4 h-0.5 rounded-full ${
+                      isActive ? 'bg-evo-red-500' : 'bg-gray-200'
                     }`} />
                   )}
                 </div>
@@ -83,10 +83,10 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
       </Card>
 
       {conversationData.discoveredPainPoints.length > 0 && (
-        <Card>
+        <Card className="evo-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center space-x-2">
-              <Target className="w-4 h-4 text-red-600" />
+              <Target className="w-4 h-4 text-evo-red-500" />
               <span>Discovered Pain Points</span>
             </CardTitle>
           </CardHeader>
@@ -106,20 +106,20 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
       )}
 
       {conversationData.recommendedProducts.length > 0 && (
-        <Card>
+        <Card className="evo-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center space-x-2">
-              <Package className="w-4 h-4 text-red-600" />
+              <Package className="w-4 h-4 text-evo-red-500" />
               <span>Recommended Solutions</span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-3">
               {conversationData.recommendedProducts.map((product, index) => (
-                <div key={index} className="p-3 bg-red-50 rounded-lg border border-red-100">
-                  <div className="font-medium text-red-900 text-sm">{product}</div>
-                  <div className="text-xs text-red-700 mt-1">
-                    Access Group Solution
+                <div key={index} className="p-3 bg-gradient-to-r from-evo-red-50 to-evo-teal-50 rounded-lg border border-evo-red-100 shadow-sm">
+                  <div className="font-medium text-evo-red-900 text-sm">{product}</div>
+                  <div className="text-xs text-evo-red-700 mt-1 font-medium">
+                    Access EVO Solution
                   </div>
                 </div>
               ))}
@@ -132,7 +132,7 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
       )}
 
       {conversationData.messages.length > 0 && (
-        <Card>
+        <Card className="evo-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium">Conversation Summary</CardTitle>
           </CardHeader>
@@ -160,7 +160,7 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
 
       <div className="text-xs text-gray-500 text-center pt-4">
         <p>Powered by Access Group</p>
-        <p className="text-red-600 font-medium">Project LISTEN</p>
+        <p className="text-evo-red-600 font-bold">Project LISTEN</p>
       </div>
     </div>
   )

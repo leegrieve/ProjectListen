@@ -104,13 +104,13 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
 
   return (
     <div className="flex flex-col h-full">
-      <div className="bg-blue-50 border-b border-blue-200 p-4">
+      <div className="bg-gradient-to-r from-evo-teal-50 to-evo-red-50 border-b border-evo-teal-200 p-4">
         <div className="flex items-start space-x-3">
-          <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+          <div className="w-6 h-6 bg-evo-teal-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
             <span className="text-white font-bold text-xs">i</span>
           </div>
-          <p className="text-sm text-blue-800">
-            I'm your Access Group consultant. Tell me about your business challenges and I'll help build a custom solution - no pushy sales, just understanding your needs.
+          <p className="text-sm text-gray-800 font-medium">
+            I'm your Access EVO consultant. Tell me about your business challenges and I'll help build a custom solution - no pushy sales, just understanding your needs.
           </p>
         </div>
       </div>
@@ -145,15 +145,15 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-3xl px-4 py-3 rounded-lg ${
+              className={`max-w-3xl px-4 py-3 rounded-xl shadow-sm ${
                 message.role === 'user'
-                  ? 'bg-red-600 text-white'
-                  : 'bg-white border border-gray-200 text-gray-900'
+                  ? 'bg-evo-red-500 text-white shadow-evo-red-200'
+                  : 'bg-white border border-gray-200 text-gray-900 hover:shadow-md transition-shadow'
               }`}
             >
               <p className="whitespace-pre-wrap">{message.content}</p>
               <p className={`text-xs mt-2 ${
-                message.role === 'user' ? 'text-red-100' : 'text-gray-500'
+                message.role === 'user' ? 'text-evo-red-100' : 'text-gray-500'
               }`}>
                 {message.timestamp.toLocaleTimeString()}
               </p>
@@ -186,7 +186,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
           <Button
             onClick={sendMessage}
             disabled={!inputMessage.trim() || isLoading}
-            className="bg-red-600 hover:bg-red-700 text-white"
+            className="evo-button"
           >
             <Send className="w-4 h-4" />
           </Button>
