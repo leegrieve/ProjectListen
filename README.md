@@ -1,6 +1,6 @@
 # Project LISTEN - AI Discovery Bot for Access Group
 
-![Access Group Logo](listen-frontend/public/accesslogo.jpg)
+![Access Group Logo](listen-frontend/public/accessevo.png)
 
 **Project LISTEN** is an AI-powered discovery bot designed to help Access Group match customers with the right products from their 180+ product portfolio through intelligent, consultative conversations.
 
