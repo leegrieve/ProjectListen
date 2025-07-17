@@ -1,6 +1,39 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Target, Package, TrendingUp } from 'lucide-react'
+import { Target, Package, TrendingUp, FileText, Download } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+
+interface BusinessSummary {
+  conversation_id: string
+  customer_business_summary: {
+    total_pain_points: number
+    conversation_length: number
+    discovery_completeness: string
+  }
+  identified_pain_points: Array<{
+    pain_point: string
+    category: string
+    solutions: Array<{
+      product: string
+      how_it_helps: string
+      business_impact: string
+      priority: string
+    }>
+  }>
+  recommended_flight_path: {
+    "Phase 1 - Foundation": Array<{
+      system: string
+      addresses: string
+      business_value: string
+      implementation_priority: string
+    }>
+    "Phase 2 - Optimization": Array<any>
+    "Phase 3 - Enhancement": Array<any>
+  }
+  next_steps: string[]
+  generated_at: string
+}
 
 interface ConversationData {
   conversationId: string | null
@@ -14,9 +47,44 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ conversationData }: SidebarProps) => {
+  const [businessSummary, setBusinessSummary] = useState<BusinessSummary | null>(null)
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false)
+  const [summaryError, setSummaryError] = useState<string | null>(null)
+
   const formatPainPoint = (painPoint: string) => {
     return painPoint.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
   }
+
+  const fetchBusinessSummary = async () => {
+    if (!conversationData.conversationId || conversationData.discoveredPainPoints.length === 0) {
+      return
+    }
+
+    setIsLoadingSummary(true)
+    setSummaryError(null)
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/conversations/${conversationData.conversationId}/business-summary`)
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch business summary')
+      }
+
+      const data = await response.json()
+      setBusinessSummary(data)
+    } catch (error) {
+      console.error('Error fetching business summary:', error)
+      setSummaryError('Failed to generate business summary')
+    } finally {
+      setIsLoadingSummary(false)
+    }
+  }
+
+  useEffect(() => {
+    if (conversationData.conversationId && conversationData.discoveredPainPoints.length > 0) {
+      fetchBusinessSummary()
+    }
+  }, [conversationData.conversationId, conversationData.discoveredPainPoints.length])
 
   const getFlightPathStage = () => {
     if (conversationData.recommendedProducts.length > 0) return 4
@@ -154,6 +222,140 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
             <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
               This summary can be shared with your Access Group account manager
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {businessSummary && (
+        <Card className="evo-card">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-evo-red-500" />
+              <span>Business Takeaway</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-3">
+              <div className="text-xs font-medium text-gray-700 uppercase tracking-wide">
+                Identified Pain Points & Solutions
+              </div>
+              
+              {businessSummary.identified_pain_points.map((painPoint, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="font-medium text-sm text-evo-red-900">
+                    {painPoint.pain_point}
+                  </div>
+                  {painPoint.solutions.slice(0, 2).map((solution, sIndex) => (
+                    <div key={sIndex} className="ml-3 p-2 bg-gradient-to-r from-evo-teal-50 to-evo-red-50 rounded border border-evo-red-100">
+                      <div className="font-medium text-xs text-evo-red-800">
+                        {solution.product}
+                      </div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        {solution.how_it_helps.replace(/"/g, '')}
+                      </div>
+                      <div className="flex justify-between items-center mt-1">
+                        <span className="text-xs text-evo-teal-600 font-medium">
+                          {solution.business_impact}
+                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                          solution.priority === 'High' 
+                            ? 'bg-evo-red-100 text-evo-red-700'
+                            : solution.priority === 'Medium'
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}>
+                          {solution.priority}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-3 pt-3 border-t border-gray-200">
+              <div className="text-xs font-medium text-gray-700 uppercase tracking-wide">
+                Recommended Flight Path
+              </div>
+              
+              {Object.entries(businessSummary.recommended_flight_path).map(([phase, items]) => (
+                items.length > 0 && (
+                  <div key={phase} className="space-y-2">
+                    <div className="font-medium text-xs text-evo-red-900">
+                      {phase}
+                    </div>
+                    {items.slice(0, 3).map((item, itemIndex) => (
+                      <div key={itemIndex} className="ml-3 p-2 bg-evo-red-50 rounded border border-evo-red-200">
+                        <div className="font-medium text-xs text-evo-red-800">
+                          {item.system}
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1">
+                          Addresses: {item.addresses}
+                        </div>
+                        <div className="text-xs text-evo-teal-600 font-medium mt-1">
+                          {item.implementation_priority}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )
+              ))}
+            </div>
+
+            <div className="space-y-2 pt-3 border-t border-gray-200">
+              <div className="text-xs font-medium text-gray-700 uppercase tracking-wide">
+                Next Steps
+              </div>
+              {businessSummary.next_steps.slice(0, 3).map((step, index) => (
+                <div key={index} className="text-xs text-gray-600 flex items-start space-x-2">
+                  <span className="text-evo-red-500 font-bold">•</span>
+                  <span>{step}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-3 border-t border-gray-200">
+              <Button
+                onClick={() => window.open(`${import.meta.env.VITE_API_URL}/api/conversations/${conversationData.conversationId}/business-summary`, '_blank')}
+                className="w-full text-xs py-2 bg-evo-teal-500 hover:bg-evo-teal-600 text-white"
+                size="sm"
+              >
+                <Download className="w-3 h-3 mr-2" />
+                Export Full Business Summary
+              </Button>
+            </div>
+
+            <div className="text-xs text-gray-500 pt-2">
+              Generated for Access Group account manager review
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {isLoadingSummary && conversationData.discoveredPainPoints.length > 0 && (
+        <Card className="evo-card">
+          <CardContent className="p-4 text-center">
+            <div className="text-xs text-gray-500">
+              Generating business takeaway...
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {summaryError && (
+        <Card className="evo-card">
+          <CardContent className="p-4">
+            <div className="text-xs text-red-600">
+              {summaryError}
+            </div>
+            <Button
+              onClick={fetchBusinessSummary}
+              className="w-full mt-2 text-xs py-1"
+              variant="outline"
+              size="sm"
+            >
+              Retry
+            </Button>
           </CardContent>
         </Card>
       )}
