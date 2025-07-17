@@ -255,6 +255,85 @@ Potential improvements and extensions:
 - **API Expansion**: New endpoints for business intelligence and data export
 - **Performance Optimization**: Improved conversation processing and response times
 
+## 📋 How to View Business Summary Output
+
+### **Method 1: Frontend UI (Recommended for Users)**
+
+1. **Access the live application**: https://ai-discovery-bot-au2m09sv.devinapps.com/
+2. **Start a conversation** with business challenges that trigger pain point detection:
+   - *"We have major staffing issues and use paper booking systems"*
+   - *"Summer is madness, winter is dead - can't plan properly"*
+   - *"We use paper menus and handwritten orders"*
+3. **Watch the sidebar**: The "Business Takeaway" section automatically appears once pain points are detected
+4. **View structured output**: See pain points, solutions, and prioritized flight path
+5. **Export full summary**: Click "Export Full Business Summary" button to download complete JSON
+
+### **Method 2: Direct API Access (For Developers/Integration)**
+
+**Step 1: Get a conversation ID**
+```bash
+curl -X POST "https://app-pozmrqgk.fly.dev/api/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "We use paper menus and handwritten orders", "conversation_id": null}'
+```
+
+**Step 2: Access the business summary**
+```bash
+curl -X GET "https://app-pozmrqgk.fly.dev/api/conversations/{conversation_id}/business-summary"
+```
+
+**Example API Response Structure:**
+```json
+{
+  "conversation_id": "uuid",
+  "customer_business_summary": {
+    "total_pain_points": 5,
+    "conversation_length": 8,
+    "discovery_completeness": "Comprehensive"
+  },
+  "identified_pain_points": [
+    {
+      "pain_point": "Operational Efficiency",
+      "category": "operational_efficiency",
+      "solutions": [
+        {
+          "product": "Collins",
+          "how_it_helps": "Digital transformation from paper systems",
+          "business_impact": "Reduced errors and improved efficiency",
+          "priority": "High"
+        }
+      ]
+    }
+  ],
+  "recommended_flight_path": {
+    "Phase 1 - Foundation": [...],
+    "Phase 2 - Optimization": [...],
+    "Phase 3 - Enhancement": [...]
+  },
+  "next_steps": [
+    "Schedule technical demonstration of recommended solutions",
+    "Conduct detailed requirements gathering for Phase 1 systems"
+  ]
+}
+```
+
+### **What You'll Get:**
+
+The structured business summary includes:
+- **Identified Pain Points**: Specific business challenges with categorization
+- **Solution Recommendations**: Access Group products with explanations of how they help
+- **Prioritized Flight Path**: Three-phase implementation plan:
+  - **Phase 1 - Foundation**: High priority items (Immediate implementation)
+  - **Phase 2 - Optimization**: Medium priority items (3-6 months)
+  - **Phase 3 - Enhancement**: Low priority items (6-12 months)
+- **Implementation Priorities**: Clear timelines for each solution
+- **Next Steps**: Actionable recommendations for Access Group account managers
+- **Business Impact Assessment**: Value proposition for each recommended solution
+
+### **For Executive Demonstrations:**
+
+Simply share the frontend URL (https://ai-discovery-bot-au2m09sv.devinapps.com/) with stakeholders. When they engage in conversation about business challenges, the business takeaway will automatically appear in the sidebar with complete structured output ready for Access Group follow-up.
+
 ---
 
 **Ready for executive demonstrations and production deployment!** 🎯
