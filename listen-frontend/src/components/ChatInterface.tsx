@@ -118,8 +118,12 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
       <div className="flex-1 overflow-y-auto p-6 space-y-4">
         {conversationData.messages.length === 0 && (
           <div className="text-center py-12">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-red-600 font-bold text-xl">A</span>
+            <div className="flex items-center justify-center mx-auto mb-4">
+              <img 
+                src="/csai.png" 
+                alt="CS AI" 
+                className="h-16 w-auto object-contain"
+              />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">Welcome to Project LISTEN</h2>
             <p className="text-gray-600 max-w-md mx-auto">
