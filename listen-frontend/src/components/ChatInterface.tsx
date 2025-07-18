@@ -160,6 +160,54 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     
     const topPriorities = sortedAllocations.slice(0, 3)
     
+    const conversationText = conversationData.messages
+      .filter(msg => msg.role === 'user')
+      .map(msg => msg.content)
+      .join(' ')
+    
+    const extractSpecificROI = (challengeType: string) => {
+      const noShowMatch = conversationText.match(/£(\d+).*(?:no-show|weekend|week)/i)
+      const wageMatch = conversationText.match(/(\d+)%.*(?:over budget|wage|labor|staff cost)/i)
+      const wifiMatch = conversationText.match(/£(\d+).*(?:month|wifi|waste)/i)
+      
+      if (challengeType.includes('Revenue') || challengeType.includes('Booking')) {
+        if (noShowMatch) {
+          const weeklyLoss = parseInt(noShowMatch[1])
+          const annualLoss = weeklyLoss * 52
+          const recoveredAmount = Math.round(annualLoss * 0.7) // 70% reduction
+          const monthlyImpact = Math.round(recoveredAmount / 12)
+          return `Your £${weeklyLoss} weekly no-show losses = £${annualLoss.toLocaleString()}/year\n• Reducing no-shows by 70% = £${recoveredAmount.toLocaleString()} recovered annually\n• Monthly impact: £${monthlyImpact.toLocaleString()} in recovered revenue`
+        }
+        return 'Reduce no-shows and maximize table turnover with measurable revenue recovery'
+      }
+      
+      if (challengeType.includes('Staff') || challengeType.includes('Operational')) {
+        if (wageMatch) {
+          const overBudgetPercent = parseInt(wageMatch[1])
+          const monthlyWages = 8000
+          const annualWages = monthlyWages * 12
+          const currentOverspend = Math.round(annualWages * (overBudgetPercent / 100))
+          const savings = Math.round(currentOverspend * 0.8) // 80% reduction in overspend
+          const monthlySavings = Math.round(savings / 12)
+          return `Your ${overBudgetPercent}% wage overspend = £${currentOverspend.toLocaleString()}/year excess\n• Reducing overspend by 80% = £${savings.toLocaleString()} saved annually\n• Monthly savings: £${monthlySavings.toLocaleString()} in labor cost reduction`
+        }
+        return 'Streamline operations and reduce manual scheduling overhead with measurable cost savings'
+      }
+      
+      if (challengeType.includes('Customer') || challengeType.includes('Digital')) {
+        if (wifiMatch) {
+          const monthlyWaste = parseInt(wifiMatch[1])
+          const annualWaste = monthlyWaste * 12
+          const savings = Math.round(annualWaste * 0.9) // 90% efficiency improvement
+          const monthlySavings = Math.round(savings / 12)
+          return `Your £${monthlyWaste}/month WiFi waste = £${annualWaste.toLocaleString()}/year\n• Optimizing WiFi efficiency by 90% = £${savings.toLocaleString()} saved annually\n• Monthly savings: £${monthlySavings.toLocaleString()} in operational efficiency`
+        }
+        return 'Enhanced customer engagement with measurable satisfaction improvements'
+      }
+      
+      return 'Measurable business impact with specific ROI tracking'
+    }
+    
     let recommendationsContent = `Thank you for prioritizing your challenges. Based on your budget allocation, I can see what matters most to your business.\n\n**Your Investment Priorities:**\n`
     
     topPriorities.forEach(([challenge, amount], index) => {
@@ -174,42 +222,42 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
         product: 'Collins Access Group',
         description: 'Advanced booking and reservation management',
         benefits: 'Reduce no-shows and maximize table turnover',
-        roi: 'Expected ROI: 15-25% revenue increase'
+        roi: extractSpecificROI('Revenue')
       },
       'Booking': {
         title: 'Revenue Optimization', 
         product: 'Collins Access Group',
         description: 'Advanced booking and reservation management',
         benefits: 'Reduce no-shows and maximize table turnover',
-        roi: 'Expected ROI: 15-25% revenue increase'
+        roi: extractSpecificROI('Booking')
       },
       'Staff': {
         title: 'Operational Excellence',
         product: 'RotaReady',
         description: 'Intelligent staff scheduling and management',
         benefits: 'Streamline operations and reduce manual processes',
-        roi: 'Expected savings: 20-30% on labor costs'
+        roi: extractSpecificROI('Staff')
       },
       'Operational': {
         title: 'Operational Excellence',
         product: 'RotaReady', 
         description: 'Intelligent staff scheduling and management',
         benefits: 'Streamline operations and reduce manual processes',
-        roi: 'Expected savings: 20-30% on labor costs'
+        roi: extractSpecificROI('Operational')
       },
       'Customer': {
         title: 'Customer Experience Enhancement',
         product: 'Guest WiFi',
         description: 'Enhanced customer engagement platform',
         benefits: 'Digital transformation and modernization',
-        roi: 'Expected improvement: 40% increase in customer satisfaction'
+        roi: extractSpecificROI('Customer')
       },
       'Digital': {
         title: 'Customer Experience Enhancement',
         product: 'Guest WiFi',
         description: 'Enhanced customer engagement platform', 
         benefits: 'Digital transformation and modernization',
-        roi: 'Expected improvement: 40% increase in customer satisfaction'
+        roi: extractSpecificROI('Digital')
       }
     }
     
