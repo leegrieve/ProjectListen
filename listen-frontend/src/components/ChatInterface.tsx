@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Send, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import BudgetAllocation from './BudgetAllocation'
 import peerInsightsData from '../data/peerInsights.json'
 
 interface Message {
@@ -40,6 +41,8 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null)
   const [showPeerInsights, setShowPeerInsights] = useState(false)
   const [showGoalSelection, setShowGoalSelection] = useState(false)
+  const [showBudgetAllocation, setShowBudgetAllocation] = useState(false)
+  const [budgetAllocationCompleted, setBudgetAllocationCompleted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const industryOptions: IndustryOption[] = [
@@ -101,6 +104,19 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     scrollToBottom()
   }, [conversationData.messages])
 
+  useEffect(() => {
+    const messageCount = conversationData.messages.filter(m => m.role === 'user').length
+    const painPointCount = conversationData.discoveredPainPoints.length
+    
+    if (messageCount >= 3 && 
+        painPointCount >= 2 && 
+        !showBudgetAllocation && 
+        !budgetAllocationCompleted &&
+        conversationData.messages.length > 0) {
+      setShowBudgetAllocation(true)
+    }
+  }, [conversationData.messages, conversationData.discoveredPainPoints, showBudgetAllocation, budgetAllocationCompleted])
+
   const handleIndustrySelect = (industryId: string) => {
     setSelectedIndustry(industryId)
     setShowPeerInsights(true)
@@ -119,9 +135,40 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     }
   }
 
+  const transformPainPointsForBudget = (painPoints: string[]): string[] => {
+    const painPointMap: { [key: string]: string } = {
+      'seasonal_fluctuations': 'Managing Seasonal Business Fluctuations',
+      'booking_management': 'Booking & Reservation Management',
+      'revenue_optimization': 'Revenue Growth & Optimization',
+      'staff_scheduling': 'Staff Scheduling & Management',
+      'operational_efficiency': 'Operational Efficiency & Automation',
+      'customer_experience': 'Customer Experience Enhancement',
+      'data_intelligence': 'Data Analytics & Business Intelligence',
+      'digital_transformation': 'Digital Transformation & Modernization'
+    }
+    
+    return painPoints.map(point => painPointMap[point] || point.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
+  }
+
+  const handleBudgetAllocationSubmit = (allocations: { [key: string]: number }) => {
+    console.log('Budget allocations received:', allocations)
+    setShowBudgetAllocation(false)
+    setBudgetAllocationCompleted(true)
+    
+    const budgetMessage: Message = {
+      role: 'assistant',
+      content: `Thank you for prioritizing your challenges. Based on your budget allocation, I can see what matters most to your business. Let me provide you with tailored recommendations that align with your priorities.`,
+      timestamp: new Date()
+    }
+    
+    updateConversationData({
+      messages: [...conversationData.messages, budgetMessage]
+    })
+  }
+
   const sendMessage = async (messageOverride?: string) => {
     const messageToSend = messageOverride || inputMessage
-    if (!messageToSend.trim() || isLoading) return
+    if (!messageToSend.trim() || isLoading || showBudgetAllocation) return
 
     const userMessage: Message = {
       role: 'user',
@@ -357,6 +404,15 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
           </div>
         ))}
 
+        {showBudgetAllocation && (
+          <div className="my-8">
+            <BudgetAllocation
+              painPoints={transformPainPointsForBudget(conversationData.discoveredPainPoints)}
+              onSubmit={handleBudgetAllocationSubmit}
+            />
+          </div>
+        )}
+
         {isLoading && (
           <div className="flex justify-start">
             <div className="bg-white border border-gray-200 rounded-lg px-4 py-3 flex items-center space-x-2">
@@ -370,23 +426,31 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
       </div>
 
       <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0">
-        <div className="flex space-x-2">
-          <Input
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Tell me about your business challenges..."
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button
-            onClick={() => sendMessage()}
-            disabled={!inputMessage.trim() || isLoading}
-            className="evo-button"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
+        {showBudgetAllocation ? (
+          <div className="text-center py-2">
+            <p className="text-sm text-gray-600">
+              Please complete your budget allocation above to continue the conversation.
+            </p>
+          </div>
+        ) : (
+          <div className="flex space-x-2">
+            <Input
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Tell me about your business challenges..."
+              disabled={isLoading}
+              className="flex-1"
+            />
+            <Button
+              onClick={() => sendMessage()}
+              disabled={!inputMessage.trim() || isLoading}
+              className="evo-button"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
