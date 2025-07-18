@@ -169,17 +169,69 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     
     recommendationsContent += `\n**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
     
-    if (topPriorities.some(([challenge]) => challenge.includes('Revenue') || challenge.includes('Booking'))) {
-      recommendationsContent += `**Phase 1: Revenue Optimization (Months 1-3)**\n• Collins Access Group - Advanced booking and reservation management\n• Reduce no-shows and maximize table turnover\n• Expected ROI: 15-25% revenue increase\n\n`
+    const challengeToSolution: { [key: string]: { title: string; product: string; description: string; benefits: string; roi: string } } = {
+      'Revenue': {
+        title: 'Revenue Optimization',
+        product: 'Collins Access Group',
+        description: 'Advanced booking and reservation management',
+        benefits: 'Reduce no-shows and maximize table turnover',
+        roi: 'Expected ROI: 15-25% revenue increase'
+      },
+      'Booking': {
+        title: 'Revenue Optimization', 
+        product: 'Collins Access Group',
+        description: 'Advanced booking and reservation management',
+        benefits: 'Reduce no-shows and maximize table turnover',
+        roi: 'Expected ROI: 15-25% revenue increase'
+      },
+      'Staff': {
+        title: 'Operational Excellence',
+        product: 'RotaReady',
+        description: 'Intelligent staff scheduling and management',
+        benefits: 'Streamline operations and reduce manual processes',
+        roi: 'Expected savings: 20-30% on labor costs'
+      },
+      'Operational': {
+        title: 'Operational Excellence',
+        product: 'RotaReady', 
+        description: 'Intelligent staff scheduling and management',
+        benefits: 'Streamline operations and reduce manual processes',
+        roi: 'Expected savings: 20-30% on labor costs'
+      },
+      'Customer': {
+        title: 'Customer Experience Enhancement',
+        product: 'Guest WiFi',
+        description: 'Enhanced customer engagement platform',
+        benefits: 'Digital transformation and modernization',
+        roi: 'Expected improvement: 40% increase in customer satisfaction'
+      },
+      'Digital': {
+        title: 'Customer Experience Enhancement',
+        product: 'Guest WiFi',
+        description: 'Enhanced customer engagement platform', 
+        benefits: 'Digital transformation and modernization',
+        roi: 'Expected improvement: 40% increase in customer satisfaction'
+      }
     }
     
-    if (topPriorities.some(([challenge]) => challenge.includes('Staff') || challenge.includes('Operational'))) {
-      recommendationsContent += `**Phase 2: Operational Excellence (Months 2-4)**\n• RotaReady - Intelligent staff scheduling and management\n• Streamline operations and reduce manual processes\n• Expected savings: 20-30% on labor costs\n\n`
-    }
+    const usedSolutions = new Set()
+    let phaseNumber = 1
     
-    if (topPriorities.some(([challenge]) => challenge.includes('Customer') || challenge.includes('Digital'))) {
-      recommendationsContent += `**Phase 3: Customer Experience Enhancement (Months 3-6)**\n• Guest WiFi - Enhanced customer engagement platform\n• Digital transformation and modernization\n• Expected improvement: 40% increase in customer satisfaction\n\n`
-    }
+    topPriorities.forEach(([challenge]) => {
+      const solutionKey = Object.keys(challengeToSolution).find(key => challenge.includes(key))
+      if (solutionKey) {
+        const solution = challengeToSolution[solutionKey]
+        const solutionId = `${solution.product}-${solution.title}`
+        
+        if (!usedSolutions.has(solutionId)) {
+          usedSolutions.add(solutionId)
+          const timeframe = phaseNumber === 1 ? 'Months 1-3' : phaseNumber === 2 ? 'Months 2-4' : 'Months 3-6'
+          
+          recommendationsContent += `**Phase ${phaseNumber}: ${solution.title} (${timeframe})**\n• ${solution.product} - ${solution.description}\n• ${solution.benefits}\n• ${solution.roi}\n\n`
+          phaseNumber++
+        }
+      }
+    })
     
     recommendationsContent += `**Next Steps:**\n• Schedule a personalized demo of your priority solutions\n• Receive detailed implementation timeline\n• Connect with our specialist team\n• Download your complete discovery report\n\nWould you like to schedule a demo or discuss any of these recommendations in more detail?`
     
