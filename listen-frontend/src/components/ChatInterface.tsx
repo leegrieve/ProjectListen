@@ -151,7 +151,6 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
   }
 
   const handleBudgetAllocationSubmit = (allocations: { [key: string]: number }) => {
-    console.log('Budget allocations received:', allocations)
     setShowBudgetAllocation(false)
     setBudgetAllocationCompleted(true)
     
