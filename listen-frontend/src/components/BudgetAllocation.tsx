@@ -28,12 +28,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
   const handleAllocationChange = (painPoint: string, value: number) => {
     const newAllocations = { ...allocations }
     newAllocations[painPoint] = value
-    
-    const newTotal = Object.values(newAllocations).reduce((sum, val) => sum + val, 0)
-    
-    if (newTotal <= 100) {
-      setAllocations(newAllocations)
-    }
+    setAllocations(newAllocations)
   }
 
   const handleSliderChange = (painPoint: string, values: number[]) => {
@@ -42,7 +37,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
 
   const handleInputChange = (painPoint: string, value: string) => {
     const numValue = parseInt(value) || 0
-    if (numValue >= 0) {
+    if (numValue >= 0 && numValue <= 100) {
       handleAllocationChange(painPoint, numValue)
     }
   }
@@ -53,7 +48,9 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
     }
   }
 
-  const isValidAllocation = totalAllocated <= 100 && totalAllocated > 0
+  const isValidAllocation = totalAllocated === 100
+  const isOverBudget = totalAllocated > 100
+  const isUnderBudget = totalAllocated < 100 && totalAllocated > 0
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
@@ -109,18 +106,41 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
             Total allocated:
           </span>
           <span className={`text-xl font-bold ${
-            totalAllocated > 100 ? 'text-red-500' : 
-            totalAllocated === 100 ? 'text-green-600' : 
-            'text-evo-red-500'
+            totalAllocated === 100 ? 'text-green-600' : 'text-red-500'
           }`}>
             £{totalAllocated} / £100
           </span>
         </div>
         
-        {totalAllocated > 100 && (
+        {/* Error messages for invalid totals */}
+        {isOverBudget && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
-            <p className="text-red-700 text-sm">
-              You've allocated £{totalAllocated - 100} over budget. Please adjust your allocations.
+            <p className="text-red-700 text-sm font-medium">
+              You've allocated £{totalAllocated - 100} over budget. Please reduce your allocations.
+            </p>
+          </div>
+        )}
+        
+        {isUnderBudget && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+            <p className="text-amber-700 text-sm font-medium">
+              You have £{100 - totalAllocated} remaining to allocate. Please distribute the full £100.
+            </p>
+          </div>
+        )}
+        
+        {totalAllocated === 0 && (
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
+            <p className="text-gray-600 text-sm">
+              Please start allocating your £100 budget across the challenges above.
+            </p>
+          </div>
+        )}
+        
+        {totalAllocated === 100 && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+            <p className="text-green-700 text-sm font-medium">
+              ✓ Perfect! You've allocated the full £100 budget.
             </p>
           </div>
         )}
@@ -128,16 +148,14 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
         <Button 
           onClick={handleSubmit}
           disabled={!isValidAllocation}
-          className="w-full evo-button"
+          className={`w-full ${
+            isValidAllocation 
+              ? 'evo-button' 
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300'
+          }`}
         >
-          Submit Budget Allocation
+          {isValidAllocation ? 'Submit Budget Allocation' : 'Complete £100 Allocation to Continue'}
         </Button>
-        
-        {totalAllocated === 0 && (
-          <p className="text-gray-500 text-sm text-center mt-2">
-            Please allocate at least £1 to continue
-          </p>
-        )}
       </div>
     </div>
   )
