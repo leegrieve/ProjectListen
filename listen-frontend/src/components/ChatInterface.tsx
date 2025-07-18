@@ -155,9 +155,37 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     setShowBudgetAllocation(false)
     setBudgetAllocationCompleted(true)
     
+    const sortedAllocations = Object.entries(allocations)
+      .filter(([_, amount]) => amount > 0)
+      .sort(([_, a], [__, b]) => b - a)
+    
+    const topPriorities = sortedAllocations.slice(0, 3)
+    
+    let recommendationsContent = `Thank you for prioritizing your challenges. Based on your budget allocation, I can see what matters most to your business.\n\n**Your Investment Priorities:**\n`
+    
+    topPriorities.forEach(([challenge, amount], index) => {
+      recommendationsContent += `${index + 1}. ${challenge}: £${amount}\n`
+    })
+    
+    recommendationsContent += `\n**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
+    
+    if (topPriorities.some(([challenge]) => challenge.includes('Revenue') || challenge.includes('Booking'))) {
+      recommendationsContent += `**Phase 1: Revenue Optimization (Months 1-3)**\n• Collins Access Group - Advanced booking and reservation management\n• Reduce no-shows and maximize table turnover\n• Expected ROI: 15-25% revenue increase\n\n`
+    }
+    
+    if (topPriorities.some(([challenge]) => challenge.includes('Staff') || challenge.includes('Operational'))) {
+      recommendationsContent += `**Phase 2: Operational Excellence (Months 2-4)**\n• RotaReady - Intelligent staff scheduling and management\n• Streamline operations and reduce manual processes\n• Expected savings: 20-30% on labor costs\n\n`
+    }
+    
+    if (topPriorities.some(([challenge]) => challenge.includes('Customer') || challenge.includes('Digital'))) {
+      recommendationsContent += `**Phase 3: Customer Experience Enhancement (Months 3-6)**\n• Guest WiFi - Enhanced customer engagement platform\n• Digital transformation and modernization\n• Expected improvement: 40% increase in customer satisfaction\n\n`
+    }
+    
+    recommendationsContent += `**Next Steps:**\n• Schedule a personalized demo of your priority solutions\n• Receive detailed implementation timeline\n• Connect with our specialist team\n• Download your complete discovery report\n\nWould you like to schedule a demo or discuss any of these recommendations in more detail?`
+    
     const budgetMessage: Message = {
       role: 'assistant',
-      content: `Thank you for prioritizing your challenges. Based on your budget allocation, I can see what matters most to your business. Let me provide you with tailored recommendations that align with your priorities.`,
+      content: recommendationsContent,
       timestamp: new Date()
     }
     
@@ -168,7 +196,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
 
   const sendMessage = async (messageOverride?: string) => {
     const messageToSend = messageOverride || inputMessage
-    if (!messageToSend.trim() || isLoading || showBudgetAllocation) return
+    if (!messageToSend.trim() || isLoading || showBudgetAllocation || budgetAllocationCompleted) return
 
     const userMessage: Message = {
       role: 'user',
@@ -430,6 +458,12 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
           <div className="text-center py-2">
             <p className="text-sm text-gray-600">
               Please complete your budget allocation above to continue the conversation.
+            </p>
+          </div>
+        ) : budgetAllocationCompleted ? (
+          <div className="text-center py-2">
+            <p className="text-sm text-gray-600">
+              Thank you for completing your budget allocation. Your personalized recommendations are shown above.
             </p>
           </div>
         ) : (
