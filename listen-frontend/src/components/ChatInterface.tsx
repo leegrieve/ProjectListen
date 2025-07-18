@@ -21,6 +21,7 @@ interface ConversationData {
 interface ChatInterfaceProps {
   conversationData: ConversationData
   updateConversationData: (data: Partial<ConversationData>) => void
+  onBudgetAllocationComplete?: () => void
 }
 
 interface IndustryOption {
@@ -35,7 +36,7 @@ interface GoalOption {
   description: string
 }
 
-const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfaceProps) => {
+const ChatInterface = ({ conversationData, updateConversationData, onBudgetAllocationComplete }: ChatInterfaceProps) => {
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null)
@@ -153,6 +154,10 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
   const handleBudgetAllocationSubmit = (allocations: { [key: string]: number }) => {
     setShowBudgetAllocation(false)
     setBudgetAllocationCompleted(true)
+    
+    if (onBudgetAllocationComplete) {
+      onBudgetAllocationComplete()
+    }
     
     const sortedAllocations = Object.entries(allocations)
       .filter(([_, amount]) => amount > 0)

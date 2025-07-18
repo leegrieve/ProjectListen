@@ -23,6 +23,7 @@ function App() {
     discoveredPainPoints: [],
     recommendedProducts: []
   })
+  const [budgetAllocationCompleted, setBudgetAllocationCompleted] = useState(false)
 
   const updateConversationData = (data: Partial<ConversationData>) => {
     setConversationData(prev => ({ ...prev, ...data }))
@@ -49,10 +50,14 @@ function App() {
           <ChatInterface 
             conversationData={conversationData}
             updateConversationData={updateConversationData}
+            onBudgetAllocationComplete={() => setBudgetAllocationCompleted(true)}
           />
         </div>
         <div className="w-80 border-l border-gray-200 flex-shrink-0">
-          <Sidebar conversationData={conversationData} />
+          <Sidebar 
+            conversationData={conversationData} 
+            budgetAllocationCompleted={budgetAllocationCompleted}
+          />
         </div>
       </main>
     </div>

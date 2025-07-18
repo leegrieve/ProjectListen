@@ -44,9 +44,10 @@ interface ConversationData {
 
 interface SidebarProps {
   conversationData: ConversationData
+  budgetAllocationCompleted?: boolean
 }
 
-const Sidebar = ({ conversationData }: SidebarProps) => {
+const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: SidebarProps) => {
   const [businessSummary, setBusinessSummary] = useState<BusinessSummary | null>(null)
   const [isLoadingSummary, setIsLoadingSummary] = useState(false)
   const [summaryError, setSummaryError] = useState<string | null>(null)
@@ -173,7 +174,7 @@ const Sidebar = ({ conversationData }: SidebarProps) => {
         </Card>
       )}
 
-      {conversationData.recommendedProducts.length > 0 && (
+      {budgetAllocationCompleted && conversationData.recommendedProducts.length > 0 && (
         <Card className="evo-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center space-x-2">
