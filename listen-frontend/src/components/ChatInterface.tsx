@@ -286,6 +286,22 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
       }
     })
     
+    recommendationsContent += `**Your Investment Priorities:**\n`
+    topPriorities.forEach(([challenge, amount]) => {
+      const solutionKey = Object.keys(challengeToSolution).find(key => challenge.includes(key))
+      if (solutionKey) {
+        const phaseNum = topPriorities.findIndex(([c]) => c === challenge) + 1
+        const phaseText = phaseNum === 1 ? 'We\'re tackling this first' : phaseNum === 2 ? 'Phase 2 focuses on' : 'Supporting improvements in Phase 3'
+        const actionText = solutionKey.includes('Staff') ? 'with intelligent scheduling' : 
+                          solutionKey.includes('Booking') || solutionKey.includes('Revenue') ? 'on your no-show losses' : 
+                          'with digital transformation'
+        
+        recommendationsContent += `✓ ${challenge} (£${amount}) - ${phaseText} ${actionText}\n`
+      }
+    })
+    
+    recommendationsContent += `\nThis custom flight path directly reflects your priorities and will address your specific pain points in order of importance to you.\n\n`
+    
     recommendationsContent += `**Next Steps:**\n• Schedule a personalized demo of your priority solutions\n• Receive detailed implementation timeline\n• Connect with our specialist team\n• Download your complete discovery report\n\nWould you like to schedule a demo or discuss any of these recommendations in more detail?`
     
     const budgetMessage: Message = {
