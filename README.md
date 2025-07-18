@@ -296,10 +296,20 @@ Potential improvements and extensions:
 ### Budget Allocation System (NEW)
 - **Interactive Budget Planning**: Users allocate £100 across discovered pain points
 - **Real-time Validation**: Ensures exact £100 allocation with visual feedback (green/red indicators)
-- **Smart Triggering**: Appears after 3+ user messages AND 2+ pain points detected
-- **Enhanced Recommendations**: Generates detailed flight path based on budget priorities
+- **Smart Triggering**: Appears automatically after 4+ user messages AND 4+ pain points detected
+- **Enhanced Recommendations**: Generates detailed flight path based on budget priorities with dynamic reordering
 - **Conversation Flow Control**: Prevents conversation reset after allocation, transitions directly to recommendations
 - **Professional UI**: Sliders and input fields with Access EVO styling
+- **Priority-Based Ordering**: Recommendations dynamically reorder based on budget allocation (highest first)
+- **Personalized ROI**: Uses actual user-stated losses for specific ROI calculations instead of generic percentages
+- **Budget Impact Messaging**: Shows how user's allocation drove recommendation priorities
+
+### Consultative Discovery Approach (CRITICAL FIX)
+- **Business Takeaway Hidden During Discovery**: Business Takeaway section completely hidden during discovery phase
+- **Product Recommendations Delayed**: No product names or recommendations visible until after budget allocation
+- **Sidebar Control**: Only "Flight Path Progress" and "Discovered Pain Points" shown during discovery
+- **Post-Allocation Reveal**: Business Takeaway section appears only after budget allocation completion
+- **Maintains Consultative Approach**: Prevents premature product pushing, ensuring genuine discovery first
 
 ### Intelligent Conversation Wrap-Up
 - **Smart Ending Detection**: Automatically detects when users are ready to proceed with 23+ completion phrases
@@ -488,6 +498,15 @@ Simply share the frontend URL (https://ai-discovery-bot-au2m09sv.devinapps.com/)
 ### 📋 **OUTSTANDING ITEMS**
 - **None**: All requested functionality has been implemented and tested
 - **Future Enhancements**: CRM integration, multi-language support, voice integration (documented for future consideration)
+
+### 🔧 **LATEST FIXES & IMPROVEMENTS**
+- **Business Takeaway Section Control**: Fixed critical UX issue where Business Takeaway appeared too early
+- **Consultative Discovery Maintained**: Ensures no product recommendations visible during discovery phase
+- **Budget Allocation Automatic Triggering**: Fixed trigger logic to appear after 4-5 exchanges with multiple pain points
+- **Dynamic Recommendation Ordering**: Solutions now reorder based on budget allocation priorities
+- **Personalized ROI Calculations**: Uses actual user-stated losses instead of generic percentages
+- **Professional Chat Input**: Dynamic height input box with auto-focus functionality
+- **Enhanced Probing Questions**: AI now digs deeper into each pain point area for comprehensive discovery
 
 ---
 
