@@ -45,6 +45,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
   const [showBudgetAllocation, setShowBudgetAllocation] = useState(false)
   const [budgetAllocationCompleted, setBudgetAllocationCompleted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const industryOptions: IndustryOption[] = [
     {
@@ -104,6 +105,34 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
   useEffect(() => {
     scrollToBottom()
   }, [conversationData.messages])
+
+  useEffect(() => {
+    if (conversationData.messages.length > 0 && 
+        conversationData.messages[conversationData.messages.length - 1].role === 'assistant' &&
+        !showBudgetAllocation && 
+        !budgetAllocationCompleted) {
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+    }
+  }, [conversationData.messages, showBudgetAllocation, budgetAllocationCompleted])
+
+  useEffect(() => {
+    if (selectedIndustry && !showPeerInsights && !showGoalSelection && 
+        conversationData.messages.length === 0 && !showBudgetAllocation) {
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+    }
+  }, [selectedIndustry, showPeerInsights, showGoalSelection, conversationData.messages.length, showBudgetAllocation])
+
+  useEffect(() => {
+    if (budgetAllocationCompleted) {
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 100)
+    }
+  }, [budgetAllocationCompleted])
 
   useEffect(() => {
     const messageCount = conversationData.messages.filter(m => m.role === 'user').length
@@ -584,12 +613,14 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
         ) : (
           <div className="flex space-x-2">
             <Input
+              ref={inputRef}
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Tell me about your business challenges..."
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 min-h-[60px] resize-none"
+              style={{ height: 'auto', minHeight: '60px' }}
             />
             <Button
               onClick={() => sendMessage()}
