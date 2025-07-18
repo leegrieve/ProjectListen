@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Send, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import peerInsightsData from '../data/peerInsights.json'
 
 interface Message {
   role: 'user' | 'assistant'
@@ -31,6 +32,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null)
+  const [showPeerInsights, setShowPeerInsights] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const industryOptions: IndustryOption[] = [
@@ -71,14 +73,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
 
   const handleIndustrySelect = (industryId: string) => {
     setSelectedIndustry(industryId)
-    const selectedOption = industryOptions.find(option => option.id === industryId)
-    if (selectedOption) {
-      const industryMessage = `I work in ${selectedOption.title.toLowerCase()}. I'd like to discuss my business challenges and explore solutions.`
-      setInputMessage(industryMessage)
-      setTimeout(() => {
-        sendMessage(industryMessage)
-      }, 100)
-    }
+    setShowPeerInsights(true)
   }
 
   const sendMessage = async (messageOverride?: string) => {
@@ -201,7 +196,58 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
           </div>
         )}
 
-        {conversationData.messages.length === 0 && selectedIndustry && (
+        {conversationData.messages.length === 0 && selectedIndustry && showPeerInsights && (
+          <div className="text-center py-8">
+            <div className="flex items-center justify-center mx-auto mb-6">
+              <img 
+                src="/csai.png" 
+                alt="CS AI" 
+                className="h-16 w-auto object-contain"
+              />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Here's what {peerInsightsData[selectedIndustry as keyof typeof peerInsightsData]?.title.toLowerCase()} like yours are focusing on:
+            </h2>
+            
+            <div className="max-w-2xl mx-auto mb-8">
+              <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                <ul className="space-y-3 text-left">
+                  {peerInsightsData[selectedIndustry as keyof typeof peerInsightsData]?.insights.map((insight, index) => (
+                    <li key={index} className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-evo-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <span className="text-gray-700 font-medium">{insight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            
+            <div className="mb-6">
+              <Button 
+                onClick={() => {
+                  setShowPeerInsights(false)
+                  const selectedOption = industryOptions.find(option => option.id === selectedIndustry)
+                  if (selectedOption) {
+                    const industryMessage = `I work in ${selectedOption.title.toLowerCase()}. I'd like to discuss my business challenges and explore solutions.`
+                    setInputMessage(industryMessage)
+                    setTimeout(() => {
+                      sendMessage(industryMessage)
+                    }, 100)
+                  }
+                }}
+                className="evo-button px-8 py-3 text-lg"
+              >
+                Let's explore your specific challenges
+              </Button>
+            </div>
+            
+            <div className="text-xs text-gray-500 max-w-lg mx-auto">
+              <p>Data based on current UK hospitality statistics from Toast UK Restaurant Statistics, ResDiary Hospitality Report 2024, and UK Hospitality Association research.</p>
+            </div>
+          </div>
+        )}
+
+        {conversationData.messages.length === 0 && selectedIndustry && !showPeerInsights && (
           <div className="text-center py-12">
             <div className="flex items-center justify-center mx-auto mb-4">
               <img 

@@ -1,0 +1,42 @@
+{
+  "restaurants-bars": {
+    "title": "Restaurants & Bars",
+    "insights": [
+      "78% want to increase revenue per table",
+      "65% struggle with no-shows costing 15-20% revenue",
+      "82% find staff scheduling challenging"
+    ]
+  },
+  "hotels-accommodation": {
+    "title": "Hotels & Accommodation",
+    "insights": [
+      "71% want to improve guest experience scores",
+      "68% struggle with booking management across channels",
+      "75% need better revenue optimization tools"
+    ]
+  },
+  "cafes-quick-service": {
+    "title": "Cafes & Quick Service",
+    "insights": [
+      "69% want to reduce order processing time",
+      "73% struggle with peak hour staffing",
+      "66% need better inventory management"
+    ]
+  },
+  "entertainment-venues": {
+    "title": "Entertainment Venues",
+    "insights": [
+      "74% want to increase event booking conversion",
+      "67% struggle with capacity management",
+      "79% need better customer data insights"
+    ]
+  },
+  "multi-site-operations": {
+    "title": "Multi-site Operations",
+    "insights": [
+      "85% struggle with cross-location visibility",
+      "72% need centralized staff scheduling",
+      "68% want unified reporting across sites"
+    ]
+  }
+}
