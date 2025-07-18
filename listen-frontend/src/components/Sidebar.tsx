@@ -227,7 +227,7 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
         </Card>
       )}
 
-      {businessSummary && (
+      {budgetAllocationCompleted && businessSummary && (
         <Card className="evo-card">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center space-x-2">
@@ -333,7 +333,7 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
         </Card>
       )}
 
-      {isLoadingSummary && conversationData.discoveredPainPoints.length > 0 && (
+      {budgetAllocationCompleted && isLoadingSummary && conversationData.discoveredPainPoints.length > 0 && (
         <Card className="evo-card">
           <CardContent className="p-4 text-center">
             <div className="text-xs text-gray-500">
@@ -343,7 +343,7 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
         </Card>
       )}
 
-      {summaryError && (
+      {budgetAllocationCompleted && summaryError && (
         <Card className="evo-card">
           <CardContent className="p-4">
             <div className="text-xs text-red-600">
