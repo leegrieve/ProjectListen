@@ -1,0 +1,22 @@
+{
+  "restaurants-bars": {
+    "title": "Restaurants & Bars",
+    "insights": []
+  },
+  "hotels-accommodation": {
+    "title": "Hotels & Accommodation",
+    "insights": []
+  },
+  "cafes-quick-service": {
+    "title": "Cafes & Quick Service",
+    "insights": []
+  },
+  "entertainment-venues": {
+    "title": "Entertainment Venues",
+    "insights": []
+  },
+  "multi-site-operations": {
+    "title": "Multi-site Operations",
+    "insights": []
+  }
+}
