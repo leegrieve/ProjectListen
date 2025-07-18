@@ -208,61 +208,51 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
       return 'Measurable business impact with specific ROI tracking'
     }
     
-    let recommendationsContent = `Thank you for prioritizing your challenges. Based on your budget allocation, I can see what matters most to your business.\n\n**Your Investment Priorities:**\n`
-    
-    topPriorities.forEach(([challenge, amount], index) => {
-      recommendationsContent += `${index + 1}. ${challenge}: £${amount}\n`
-    })
+    let recommendationsContent = `Thank you for prioritizing your challenges. Based on your budget allocation, I can see what matters most to your business.\n\n`
     
     const highestPriority = topPriorities[0]
     if (highestPriority) {
-      recommendationsContent += `\nBased on your £${highestPriority[1]} investment priority in ${highestPriority[0]}, we're focusing first on the area that matters most to you.\n`
+      recommendationsContent += `Based on your £${highestPriority[1]} investment priority in ${highestPriority[0]}, we're focusing first on the area that matters most to you.\n\n`
     }
     
-    recommendationsContent += `\n**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
+    recommendationsContent += `**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
     
-    const challengeToSolution: { [key: string]: { title: string; solution: string; description: string; benefits: string; roi: string } } = {
+    const challengeToSolution: { [key: string]: { title: string; solution: string; description: string; benefits: string } } = {
       'Revenue': {
         title: 'Revenue Optimization',
-        solution: 'Advanced booking and reservation management solution',
-        description: 'Intelligent booking system with automated confirmations and no-show prevention',
-        benefits: 'Reduce no-shows and maximize table turnover',
-        roi: extractSpecificROI('Revenue')
+        solution: 'Intelligent booking and reservation solution',
+        description: 'Advanced booking management system',
+        benefits: 'Reduce no-shows and maximize table turnover'
       },
       'Booking': {
         title: 'Revenue Optimization', 
-        solution: 'Advanced booking and reservation management solution',
-        description: 'Intelligent booking system with automated confirmations and no-show prevention',
-        benefits: 'Reduce no-shows and maximize table turnover',
-        roi: extractSpecificROI('Booking')
+        solution: 'Intelligent booking and reservation solution',
+        description: 'Advanced booking management system',
+        benefits: 'Reduce no-shows and maximize table turnover'
       },
       'Staff': {
         title: 'Operational Excellence',
-        solution: 'Intelligent staff scheduling and management solution',
-        description: 'Automated scheduling system with shift optimization and communication tools',
-        benefits: 'Streamline operations and reduce manual processes',
-        roi: extractSpecificROI('Staff')
+        solution: 'Intelligent staff scheduling solution',
+        description: 'Smart scheduling and workforce management',
+        benefits: 'Streamline operations and reduce manual processes'
       },
       'Operational': {
         title: 'Operational Excellence',
-        solution: 'Intelligent staff scheduling and management solution', 
-        description: 'Automated scheduling system with shift optimization and communication tools',
-        benefits: 'Streamline operations and reduce manual processes',
-        roi: extractSpecificROI('Operational')
+        solution: 'Intelligent staff scheduling solution', 
+        description: 'Smart scheduling and workforce management',
+        benefits: 'Streamline operations and reduce manual processes'
       },
       'Customer': {
         title: 'Customer Experience Enhancement',
-        solution: 'Enhanced customer engagement platform',
-        description: 'Digital customer experience solution with WiFi analytics and engagement tools',
-        benefits: 'Digital transformation and modernization',
-        roi: extractSpecificROI('Customer')
+        solution: 'Digital customer engagement solution',
+        description: 'Enhanced customer interaction platform',
+        benefits: 'Digital transformation and modernization'
       },
       'Digital': {
         title: 'Customer Experience Enhancement',
-        solution: 'Enhanced customer engagement platform',
-        description: 'Digital customer experience solution with WiFi analytics and engagement tools', 
-        benefits: 'Digital transformation and modernization',
-        roi: extractSpecificROI('Digital')
+        solution: 'Digital customer engagement solution',
+        description: 'Enhanced customer interaction platform', 
+        benefits: 'Digital transformation and modernization'
       }
     }
     
@@ -278,9 +268,8 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
         if (!usedSolutions.has(solutionId)) {
           usedSolutions.add(solutionId)
           const timeframe = phaseNumber === 1 ? 'Months 1-3' : phaseNumber === 2 ? 'Months 2-4' : 'Months 3-6'
-          const priorityLevel = phaseNumber === 1 ? 'highest concern' : phaseNumber === 2 ? 'second priority' : 'supporting improvement'
           
-          recommendationsContent += `**Phase ${phaseNumber} (£${amount} priority): ${solution.title} (${timeframe})**\n• ${solution.solution}\n• ${solution.description}\n• ${solution.benefits} - addressing your ${priorityLevel}\n• ${solution.roi}\n\n`
+          recommendationsContent += `**Phase ${phaseNumber}: ${solution.title} (${timeframe}) - £${amount} priority**\n• ${solution.solution}\n• ${solution.description}\n• ${solution.benefits}\n• ${extractSpecificROI(solutionKey)}\n\n`
           phaseNumber++
         }
       }
@@ -292,9 +281,9 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
       if (solutionKey) {
         const phaseNum = topPriorities.findIndex(([c]) => c === challenge) + 1
         const phaseText = phaseNum === 1 ? 'We\'re tackling this first' : phaseNum === 2 ? 'Phase 2 focuses on' : 'Supporting improvements in Phase 3'
-        const actionText = solutionKey.includes('Staff') ? 'with intelligent scheduling' : 
-                          solutionKey.includes('Booking') || solutionKey.includes('Revenue') ? 'on your no-show losses' : 
-                          'with digital transformation'
+        const actionText = solutionKey.includes('Staff') ? 'with intelligent scheduling solutions' : 
+                          solutionKey.includes('Booking') || solutionKey.includes('Revenue') ? 'on your booking and revenue challenges' : 
+                          'with digital transformation solutions'
         
         recommendationsContent += `✓ ${challenge} (£${amount}) - ${phaseText} ${actionText}\n`
       }
