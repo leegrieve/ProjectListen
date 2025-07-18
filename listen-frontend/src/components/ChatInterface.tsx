@@ -214,6 +214,11 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
       recommendationsContent += `${index + 1}. ${challenge}: £${amount}\n`
     })
     
+    const highestPriority = topPriorities[0]
+    if (highestPriority) {
+      recommendationsContent += `\nBased on your £${highestPriority[1]} investment priority in ${highestPriority[0]}, we're focusing first on the area that matters most to you.\n`
+    }
+    
     recommendationsContent += `\n**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
     
     const challengeToSolution: { [key: string]: { title: string; product: string; description: string; benefits: string; roi: string } } = {
@@ -264,7 +269,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     const usedSolutions = new Set()
     let phaseNumber = 1
     
-    topPriorities.forEach(([challenge]) => {
+    topPriorities.forEach(([challenge, amount]) => {
       const solutionKey = Object.keys(challengeToSolution).find(key => challenge.includes(key))
       if (solutionKey) {
         const solution = challengeToSolution[solutionKey]
@@ -273,8 +278,9 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
         if (!usedSolutions.has(solutionId)) {
           usedSolutions.add(solutionId)
           const timeframe = phaseNumber === 1 ? 'Months 1-3' : phaseNumber === 2 ? 'Months 2-4' : 'Months 3-6'
+          const priorityLevel = phaseNumber === 1 ? 'highest concern' : phaseNumber === 2 ? 'second priority' : 'supporting improvement'
           
-          recommendationsContent += `**Phase ${phaseNumber}: ${solution.title} (${timeframe})**\n• ${solution.product} - ${solution.description}\n• ${solution.benefits}\n• ${solution.roi}\n\n`
+          recommendationsContent += `**Phase ${phaseNumber} (£${amount} priority): ${solution.title} (${timeframe})**\n• ${solution.product} - ${solution.description}\n• ${solution.benefits} - addressing your ${priorityLevel}\n• ${solution.roi}\n\n`
           phaseNumber++
         }
       }
