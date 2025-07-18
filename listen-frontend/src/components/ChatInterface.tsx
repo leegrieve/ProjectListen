@@ -28,11 +28,18 @@ interface IndustryOption {
   description: string
 }
 
+interface GoalOption {
+  id: string
+  title: string
+  description: string
+}
+
 const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfaceProps) => {
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null)
   const [showPeerInsights, setShowPeerInsights] = useState(false)
+  const [showGoalSelection, setShowGoalSelection] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const industryOptions: IndustryOption[] = [
@@ -63,6 +70,29 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     }
   ]
 
+  const goalOptions: GoalOption[] = [
+    {
+      id: 'grow-revenue',
+      title: 'Grow Revenue',
+      description: 'Increase sales, optimize pricing, and boost profitability'
+    },
+    {
+      id: 'cut-costs',
+      title: 'Cut Costs',
+      description: 'Reduce expenses, improve efficiency, and streamline operations'
+    },
+    {
+      id: 'enhance-experience',
+      title: 'Enhance Experience',
+      description: 'Improve customer satisfaction and service quality'
+    },
+    {
+      id: 'streamline-operations',
+      title: 'Streamline Operations',
+      description: 'Automate processes, reduce manual work, and increase productivity'
+    }
+  ]
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -74,6 +104,19 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
   const handleIndustrySelect = (industryId: string) => {
     setSelectedIndustry(industryId)
     setShowPeerInsights(true)
+  }
+
+  const handleGoalSelect = (goalId: string) => {
+    setShowGoalSelection(false)
+    const selectedOption = industryOptions.find(option => option.id === selectedIndustry)
+    const selectedGoalOption = goalOptions.find(option => option.id === goalId)
+    if (selectedOption && selectedGoalOption) {
+      const industryMessage = `I work in ${selectedOption.title.toLowerCase()} and my primary goal is to ${selectedGoalOption.title.toLowerCase()}. I'd like to discuss my business challenges and explore solutions.`
+      setInputMessage(industryMessage)
+      setTimeout(() => {
+        sendMessage(industryMessage)
+      }, 100)
+    }
   }
 
   const sendMessage = async (messageOverride?: string) => {
@@ -226,14 +269,7 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
               <Button 
                 onClick={() => {
                   setShowPeerInsights(false)
-                  const selectedOption = industryOptions.find(option => option.id === selectedIndustry)
-                  if (selectedOption) {
-                    const industryMessage = `I work in ${selectedOption.title.toLowerCase()}. I'd like to discuss my business challenges and explore solutions.`
-                    setInputMessage(industryMessage)
-                    setTimeout(() => {
-                      sendMessage(industryMessage)
-                    }, 100)
-                  }
+                  setShowGoalSelection(true)
                 }}
                 className="evo-button px-8 py-3 text-lg"
               >
@@ -247,7 +283,42 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
           </div>
         )}
 
-        {conversationData.messages.length === 0 && selectedIndustry && !showPeerInsights && (
+        {conversationData.messages.length === 0 && selectedIndustry && showGoalSelection && (
+          <div className="text-center py-8">
+            <div className="flex items-center justify-center mx-auto mb-6">
+              <img 
+                src="/csai.png" 
+                alt="CS AI" 
+                className="h-16 w-auto object-contain"
+              />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              What's your primary goal for your {industryOptions.find(i => i.id === selectedIndustry)?.title.toLowerCase()} business?
+            </h2>
+            <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
+              This will help me provide more targeted recommendations
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+              {goalOptions.map((goal) => (
+                <div
+                  key={goal.id}
+                  onClick={() => handleGoalSelect(goal.id)}
+                  className="bg-white border-2 border-gray-200 rounded-xl p-6 cursor-pointer hover:border-evo-red-500 hover:shadow-lg transition-all duration-200 group"
+                >
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-evo-red-600">
+                    {goal.title}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {goal.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {conversationData.messages.length === 0 && selectedIndustry && !showPeerInsights && !showGoalSelection && (
           <div className="text-center py-12">
             <div className="flex items-center justify-center mx-auto mb-4">
               <img 
