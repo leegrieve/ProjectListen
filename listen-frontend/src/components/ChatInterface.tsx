@@ -221,46 +221,46 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
     
     recommendationsContent += `\n**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
     
-    const challengeToSolution: { [key: string]: { title: string; product: string; description: string; benefits: string; roi: string } } = {
+    const challengeToSolution: { [key: string]: { title: string; solution: string; description: string; benefits: string; roi: string } } = {
       'Revenue': {
         title: 'Revenue Optimization',
-        product: 'Collins Access Group',
-        description: 'Advanced booking and reservation management',
+        solution: 'Advanced booking and reservation management solution',
+        description: 'Intelligent booking system with automated confirmations and no-show prevention',
         benefits: 'Reduce no-shows and maximize table turnover',
         roi: extractSpecificROI('Revenue')
       },
       'Booking': {
         title: 'Revenue Optimization', 
-        product: 'Collins Access Group',
-        description: 'Advanced booking and reservation management',
+        solution: 'Advanced booking and reservation management solution',
+        description: 'Intelligent booking system with automated confirmations and no-show prevention',
         benefits: 'Reduce no-shows and maximize table turnover',
         roi: extractSpecificROI('Booking')
       },
       'Staff': {
         title: 'Operational Excellence',
-        product: 'RotaReady',
-        description: 'Intelligent staff scheduling and management',
+        solution: 'Intelligent staff scheduling and management solution',
+        description: 'Automated scheduling system with shift optimization and communication tools',
         benefits: 'Streamline operations and reduce manual processes',
         roi: extractSpecificROI('Staff')
       },
       'Operational': {
         title: 'Operational Excellence',
-        product: 'RotaReady', 
-        description: 'Intelligent staff scheduling and management',
+        solution: 'Intelligent staff scheduling and management solution', 
+        description: 'Automated scheduling system with shift optimization and communication tools',
         benefits: 'Streamline operations and reduce manual processes',
         roi: extractSpecificROI('Operational')
       },
       'Customer': {
         title: 'Customer Experience Enhancement',
-        product: 'Guest WiFi',
-        description: 'Enhanced customer engagement platform',
+        solution: 'Enhanced customer engagement platform',
+        description: 'Digital customer experience solution with WiFi analytics and engagement tools',
         benefits: 'Digital transformation and modernization',
         roi: extractSpecificROI('Customer')
       },
       'Digital': {
         title: 'Customer Experience Enhancement',
-        product: 'Guest WiFi',
-        description: 'Enhanced customer engagement platform', 
+        solution: 'Enhanced customer engagement platform',
+        description: 'Digital customer experience solution with WiFi analytics and engagement tools', 
         benefits: 'Digital transformation and modernization',
         roi: extractSpecificROI('Digital')
       }
@@ -273,14 +273,14 @@ const ChatInterface = ({ conversationData, updateConversationData }: ChatInterfa
       const solutionKey = Object.keys(challengeToSolution).find(key => challenge.includes(key))
       if (solutionKey) {
         const solution = challengeToSolution[solutionKey]
-        const solutionId = `${solution.product}-${solution.title}`
+        const solutionId = `${solution.solution}-${solution.title}`
         
         if (!usedSolutions.has(solutionId)) {
           usedSolutions.add(solutionId)
           const timeframe = phaseNumber === 1 ? 'Months 1-3' : phaseNumber === 2 ? 'Months 2-4' : 'Months 3-6'
           const priorityLevel = phaseNumber === 1 ? 'highest concern' : phaseNumber === 2 ? 'second priority' : 'supporting improvement'
           
-          recommendationsContent += `**Phase ${phaseNumber} (£${amount} priority): ${solution.title} (${timeframe})**\n• ${solution.product} - ${solution.description}\n• ${solution.benefits} - addressing your ${priorityLevel}\n• ${solution.roi}\n\n`
+          recommendationsContent += `**Phase ${phaseNumber} (£${amount} priority): ${solution.title} (${timeframe})**\n• ${solution.solution}\n• ${solution.description}\n• ${solution.benefits} - addressing your ${priorityLevel}\n• ${solution.roi}\n\n`
           phaseNumber++
         }
       }
