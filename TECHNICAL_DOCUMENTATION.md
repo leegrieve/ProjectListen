@@ -239,7 +239,7 @@ ANTHROPIC_API_KEY=sk-ant-api03-...
 
 # Frontend (.env)
 VITE_API_URL=http://localhost:8000  # Development
-VITE_API_URL=https://app-pozmrqgk.fly.dev  # Production
+VITE_API_URL=https://app-jeunfzgn.fly.dev  # Production
 ```
 
 ### CORS Configuration
@@ -281,7 +281,7 @@ npm run build  # Creates optimized dist/ folder
 
 ### Production URLs
 - **Frontend**: https://ai-discovery-bot-au2m09sv.devinapps.com/
-- **Backend**: https://app-pozmrqgk.fly.dev/
+- **Backend**: https://app-jeunfzgn.fly.dev/
 
 ## 📊 Performance Considerations
 

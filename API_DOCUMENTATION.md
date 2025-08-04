@@ -2,7 +2,7 @@
 
 ## 🌐 Base URL
 - **Development**: `http://localhost:8000`
-- **Production**: `https://app-pozmrqgk.fly.dev`
+- **Production**: `https://app-jeunfzgn.fly.dev`
 
 ## 📋 API Overview
 
@@ -51,7 +51,7 @@ Main conversation endpoint for processing user messages and generating AI respon
 
 **Example Request:**
 ```bash
-curl -X POST "https://app-pozmrqgk.fly.dev/api/chat" \
+curl -X POST "https://app-jeunfzgn.fly.dev/api/chat" \
   -H "Content-Type: application/json" \
   -d '{
     "message": "Summer is absolutely madness while winter is dead",
@@ -95,7 +95,7 @@ Retrieve the complete message history for a conversation.
 
 **Example Request:**
 ```bash
-curl "https://app-pozmrqgk.fly.dev/api/history/conv_1234567890"
+curl "https://app-jeunfzgn.fly.dev/api/history/conv_1234567890"
 ```
 
 ### 3. Product Recommendations
@@ -256,7 +256,7 @@ Typical response times:
 
 **Start a new conversation:**
 ```bash
-curl -X POST "https://app-pozmrqgk.fly.dev/api/chat" \
+curl -X POST "https://app-jeunfzgn.fly.dev/api/chat" \
   -H "Content-Type: application/json" \
   -d '{
     "message": "We have issues with staff scheduling during busy periods",
@@ -266,7 +266,7 @@ curl -X POST "https://app-pozmrqgk.fly.dev/api/chat" \
 
 **Continue existing conversation:**
 ```bash
-curl -X POST "https://app-pozmrqgk.fly.dev/api/chat" \
+curl -X POST "https://app-jeunfzgn.fly.dev/api/chat" \
   -H "Content-Type: application/json" \
   -d '{
     "message": "Tell me more about workforce management solutions",
@@ -276,14 +276,14 @@ curl -X POST "https://app-pozmrqgk.fly.dev/api/chat" \
 
 **Get conversation history:**
 ```bash
-curl "https://app-pozmrqgk.fly.dev/api/history/conv_1234567890"
+curl "https://app-jeunfzgn.fly.dev/api/history/conv_1234567890"
 ```
 
 ### Using JavaScript/Fetch
 
 ```javascript
 // Start new conversation
-const response = await fetch('https://app-pozmrqgk.fly.dev/api/chat', {
+const response = await fetch('https://app-jeunfzgn.fly.dev/api/chat', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -305,7 +305,7 @@ import requests
 
 # Start new conversation
 response = requests.post(
-    'https://app-pozmrqgk.fly.dev/api/chat',
+    'https://app-jeunfzgn.fly.dev/api/chat',
     json={
         'message': 'We need help with revenue optimization',
         'conversation_id': None

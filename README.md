@@ -191,7 +191,7 @@ The bot provides a complete guided experience from initial contact to final reco
 ## 🌐 Live Deployment
 
 - **Frontend**: https://ai-discovery-bot-au2m09sv.devinapps.com/
-- **Backend API**: https://app-pozmrqgk.fly.dev/
+- **Backend API**: https://app-jeunfzgn.fly.dev/
 - **Status**: Production-ready for executive demonstrations
 
 ## 📊 Business Value
@@ -407,14 +407,14 @@ for you right now?"
 
 **Step 1: Get a conversation ID**
 ```bash
-curl -X POST "https://app-pozmrqgk.fly.dev/api/chat" \
+curl -X POST "https://app-jeunfzgn.fly.dev/api/chat" \
   -H "Content-Type: application/json" \
   -d '{"message": "We use paper menus and handwritten orders", "conversation_id": null}'
 ```
 
 **Step 2: Access the business summary**
 ```bash
-curl -X GET "https://app-pozmrqgk.fly.dev/api/conversations/{conversation_id}/business-summary"
+curl -X GET "https://app-jeunfzgn.fly.dev/api/conversations/{conversation_id}/business-summary"
 ```
 
 **Example API Response Structure:**
