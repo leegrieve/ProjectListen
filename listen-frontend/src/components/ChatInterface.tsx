@@ -3,6 +3,7 @@ import { Send, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import BudgetAllocation from './BudgetAllocation'
+import EnhancedRecommendations from './EnhancedRecommendations'
 import peerInsightsData from '../data/peerInsights.json'
 
 interface Message {
@@ -16,6 +17,7 @@ interface ConversationData {
   messages: Message[]
   discoveredPainPoints: string[]
   recommendedProducts: string[]
+  budgetAllocations?: { [key: string]: number }
 }
 
 interface ChatInterfaceProps {
@@ -45,6 +47,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
   const [showBudgetAllocation, setShowBudgetAllocation] = useState(false)
   const [showRecommendationsButton, setShowRecommendationsButton] = useState(false)
   const [budgetAllocationCompleted, setBudgetAllocationCompleted] = useState(false)
+  const [showEnhancedRecommendations, setShowEnhancedRecommendations] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -191,153 +194,19 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
   const handleBudgetAllocationSubmit = (allocations: { [key: string]: number }) => {
     setShowBudgetAllocation(false)
     setBudgetAllocationCompleted(true)
+    setShowEnhancedRecommendations(true)
     
     if (onBudgetAllocationComplete) {
       onBudgetAllocationComplete()
     }
     
-    const sortedAllocations = Object.entries(allocations)
-      .filter(([_, amount]) => amount > 0)
-      .sort(([_, a], [__, b]) => b - a)
-    
-    const topPriorities = sortedAllocations.slice(0, 3)
-    
-    const conversationText = conversationData.messages
-      .filter(msg => msg.role === 'user')
-      .map(msg => msg.content)
-      .join(' ')
-    
-    const extractSpecificROI = (challengeType: string) => {
-      const noShowMatch = conversationText.match(/£(\d+).*(?:no-show|weekend|week)/i)
-      const wageMatch = conversationText.match(/(\d+)%.*(?:over budget|wage|labor|staff cost)/i)
-      const wifiMatch = conversationText.match(/£(\d+).*(?:month|wifi|waste)/i)
-      
-      if (challengeType.includes('Revenue') || challengeType.includes('Booking')) {
-        if (noShowMatch) {
-          const weeklyLoss = parseInt(noShowMatch[1])
-          const annualLoss = weeklyLoss * 52
-          const recoveredAmount = Math.round(annualLoss * 0.7) // 70% reduction
-          const monthlyImpact = Math.round(recoveredAmount / 12)
-          return `Your £${weeklyLoss} weekly no-show losses = £${annualLoss.toLocaleString()}/year\n• Reducing no-shows by 70% = £${recoveredAmount.toLocaleString()} recovered annually\n• Monthly impact: £${monthlyImpact.toLocaleString()} in recovered revenue`
-        }
-        return 'Reduce no-shows and maximize table turnover with measurable revenue recovery'
-      }
-      
-      if (challengeType.includes('Staff') || challengeType.includes('Operational')) {
-        if (wageMatch) {
-          const overBudgetPercent = parseInt(wageMatch[1])
-          const monthlyWages = 8000
-          const annualWages = monthlyWages * 12
-          const currentOverspend = Math.round(annualWages * (overBudgetPercent / 100))
-          const savings = Math.round(currentOverspend * 0.8) // 80% reduction in overspend
-          const monthlySavings = Math.round(savings / 12)
-          return `Your ${overBudgetPercent}% wage overspend = £${currentOverspend.toLocaleString()}/year excess\n• Reducing overspend by 80% = £${savings.toLocaleString()} saved annually\n• Monthly savings: £${monthlySavings.toLocaleString()} in labor cost reduction`
-        }
-        return 'Streamline operations and reduce manual scheduling overhead with measurable cost savings'
-      }
-      
-      if (challengeType.includes('Customer') || challengeType.includes('Digital')) {
-        if (wifiMatch) {
-          const monthlyWaste = parseInt(wifiMatch[1])
-          const annualWaste = monthlyWaste * 12
-          const savings = Math.round(annualWaste * 0.9) // 90% efficiency improvement
-          const monthlySavings = Math.round(savings / 12)
-          return `Your £${monthlyWaste}/month WiFi waste = £${annualWaste.toLocaleString()}/year\n• Optimizing WiFi efficiency by 90% = £${savings.toLocaleString()} saved annually\n• Monthly savings: £${monthlySavings.toLocaleString()} in operational efficiency`
-        }
-        return 'Enhanced customer engagement with measurable satisfaction improvements'
-      }
-      
-      return 'Measurable business impact with specific ROI tracking'
-    }
-    
-    let recommendationsContent = `Thank you for prioritizing your challenges. Based on your pebble allocation, I can see what matters most to your business.\n\n`
-    
-    const highestPriority = topPriorities[0]
-    if (highestPriority) {
-      recommendationsContent += `Based on your ${highestPriority[1]} pebbles priority in ${highestPriority[0]}, we're focusing first on the area that matters most to you.\n\n`
-    }
-    
-    recommendationsContent += `**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
-    
-    const challengeToSolution: { [key: string]: { title: string; solution: string; description: string; benefits: string } } = {
-      'Revenue': {
-        title: 'Revenue Optimization',
-        solution: 'Intelligent booking and reservation solution',
-        description: 'Advanced booking management system',
-        benefits: 'Reduce no-shows and maximize table turnover'
-      },
-      'Booking': {
-        title: 'Revenue Optimization', 
-        solution: 'Intelligent booking and reservation solution',
-        description: 'Advanced booking management system',
-        benefits: 'Reduce no-shows and maximize table turnover'
-      },
-      'Staff': {
-        title: 'Operational Excellence',
-        solution: 'Intelligent staff scheduling solution',
-        description: 'Smart scheduling and workforce management',
-        benefits: 'Streamline operations and reduce manual processes'
-      },
-      'Operational': {
-        title: 'Operational Excellence',
-        solution: 'Intelligent staff scheduling solution', 
-        description: 'Smart scheduling and workforce management',
-        benefits: 'Streamline operations and reduce manual processes'
-      },
-      'Customer': {
-        title: 'Customer Experience Enhancement',
-        solution: 'Digital customer engagement solution',
-        description: 'Enhanced customer interaction platform',
-        benefits: 'Digital transformation and modernization'
-      },
-      'Digital': {
-        title: 'Customer Experience Enhancement',
-        solution: 'Digital customer engagement solution',
-        description: 'Enhanced customer interaction platform', 
-        benefits: 'Digital transformation and modernization'
-      }
-    }
-    
-    const usedSolutions = new Set()
-    let phaseNumber = 1
-    
-    topPriorities.forEach(([challenge, amount]) => {
-      const solutionKey = Object.keys(challengeToSolution).find(key => challenge.includes(key))
-      if (solutionKey) {
-        const solution = challengeToSolution[solutionKey]
-        const solutionId = `${solution.solution}-${solution.title}`
-        
-        if (!usedSolutions.has(solutionId)) {
-          usedSolutions.add(solutionId)
-          const timeframe = phaseNumber === 1 ? 'Months 1-3' : phaseNumber === 2 ? 'Months 2-4' : 'Months 3-6'
-          
-          recommendationsContent += `**Phase ${phaseNumber}: ${solution.title} (${timeframe}) - ${amount} pebbles priority**\n• ${solution.solution}\n• ${solution.description}\n• ${solution.benefits}\n• ${extractSpecificROI(solutionKey)}\n\n`
-          phaseNumber++
-        }
-      }
+    updateConversationData({
+      budgetAllocations: allocations
     })
-    
-    recommendationsContent += `**Your Priorities:**\n`
-    topPriorities.forEach(([challenge, amount]) => {
-      const solutionKey = Object.keys(challengeToSolution).find(key => challenge.includes(key))
-      if (solutionKey) {
-        const phaseNum = topPriorities.findIndex(([c]) => c === challenge) + 1
-        const phaseText = phaseNum === 1 ? 'We\'re tackling this first' : phaseNum === 2 ? 'Phase 2 focuses on' : 'Supporting improvements in Phase 3'
-        const actionText = solutionKey.includes('Staff') ? 'with intelligent scheduling solutions' : 
-                          solutionKey.includes('Booking') || solutionKey.includes('Revenue') ? 'on your booking and revenue challenges' : 
-                          'with digital transformation solutions'
-        
-        recommendationsContent += `✓ ${challenge} (${amount} pebbles) - ${phaseText} ${actionText}\n`
-      }
-    })
-    
-    recommendationsContent += `\nThis custom flight path directly reflects your priorities and will address your specific pain points in order of importance to you.\n\n`
-    
-    recommendationsContent += `**Next Steps:**\n• Schedule a personalized demo of your priority solutions\n• Receive detailed implementation timeline\n• Connect with our specialist team\n• Download your complete discovery report\n\nWould you like to schedule a demo or discuss any of these recommendations in more detail?`
     
     const budgetMessage: Message = {
       role: 'assistant',
-      content: recommendationsContent,
+      content: `Thank you for prioritizing your challenges. Based on your pebble allocation, I can see what matters most to your business. Your personalized recommendations are displayed below.`,
       timestamp: new Date()
     }
     
@@ -345,6 +214,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
       messages: [...conversationData.messages, budgetMessage]
     })
   }
+
 
   const sendMessage = async (messageOverride?: string) => {
     const messageToSend = messageOverride || inputMessage
@@ -603,6 +473,19 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
             <BudgetAllocation
               painPoints={transformPainPointsForBudget(conversationData.discoveredPainPoints)}
               onSubmit={handleBudgetAllocationSubmit}
+            />
+          </div>
+        )}
+
+        {showEnhancedRecommendations && conversationData.budgetAllocations && (
+          <div className="my-8">
+            <EnhancedRecommendations
+              allocations={conversationData.budgetAllocations}
+              painPoints={conversationData.discoveredPainPoints}
+              conversationText={conversationData.messages
+                .filter(msg => msg.role === 'user')
+                .map(msg => msg.content)
+                .join(' ')}
             />
           </div>
         )}

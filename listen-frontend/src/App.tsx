@@ -14,6 +14,7 @@ interface ConversationData {
   messages: Message[]
   discoveredPainPoints: string[]
   recommendedProducts: string[]
+  budgetAllocations?: { [key: string]: number }
 }
 
 function App() {

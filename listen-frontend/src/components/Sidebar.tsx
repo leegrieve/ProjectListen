@@ -243,89 +243,109 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
               </h3>
               
               {businessSummary.identified_pain_points.map((painPoint, index) => (
-                <div key={index} className="space-y-3">
-                  <div className="font-medium text-sm text-evo-red-900">
-                    {painPoint.pain_point}
-                  </div>
-                  {painPoint.solutions.slice(0, 2).map((solution, sIndex) => (
-                    <div key={sIndex} className="ml-3 p-2 bg-gradient-to-r from-evo-teal-50 to-evo-red-50 rounded border border-evo-red-100">
-                      <div className="font-medium text-xs text-evo-red-800">
-                        {solution.product}
+                <Card key={index} className="border border-gray-200">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-semibold text-evo-red-900">
+                      {painPoint.pain_point}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {painPoint.solutions.slice(0, 2).map((solution, sIndex) => (
+                      <div key={sIndex} className="p-3 bg-evo-teal-50 rounded-lg border border-evo-teal-200">
+                        <div className="flex items-start space-x-2 mb-2">
+                          <span className="text-evo-teal-600 font-bold text-sm mt-0.5">✔︎</span>
+                          <div className="flex-1">
+                            <div className="font-medium text-xs text-gray-800">
+                              {solution.product}
+                            </div>
+                            <div className="text-xs text-gray-600 mt-1">
+                              {solution.how_it_helps.replace(/"/g, '')}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-xs text-evo-teal-700 mt-2 italic">
+                          {solution.why_suggested}
+                        </div>
+                        <div className="flex justify-between items-center mt-2">
+                          <span className="text-xs text-evo-teal-600 font-medium">
+                            {solution.business_impact}
+                          </span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                            solution.priority === 'High' 
+                              ? 'bg-evo-red-100 text-evo-red-700'
+                              : solution.priority === 'Medium'
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {solution.priority}
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-600 mt-1">
-                        {solution.how_it_helps.replace(/"/g, '')}
-                      </div>
-                      <div className="text-xs text-evo-teal-700 mt-1 italic">
-                        ✓ {solution.why_suggested}
-                      </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <span className="text-xs text-evo-teal-600 font-medium">
-                          {solution.business_impact}
-                        </span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          solution.priority === 'High' 
-                            ? 'bg-evo-red-100 text-evo-red-700'
-                            : solution.priority === 'Medium'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-100 text-gray-600'
-                        }`}>
-                          {solution.priority}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
-            <div className="space-y-3 pt-3 border-t border-gray-200">
+            <div className="space-y-4 pt-4 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">
                 Your Custom Flight Path
               </h3>
               
               {Object.entries(businessSummary.recommended_flight_path).map(([phase, items]) => (
                 items.length > 0 && (
-                  <div key={phase} className="space-y-2">
-                    <div className="font-medium text-xs text-evo-red-900">
-                      {phase}
-                    </div>
-                    {items.slice(0, 3).map((item, itemIndex) => (
-                      <div key={itemIndex} className="ml-3 p-2 bg-evo-red-50 rounded border border-evo-red-200">
-                        <div className="font-medium text-xs text-evo-red-800">
-                          {item.system}
+                  <Card key={phase} className="border-l-4 border-l-evo-teal-500">
+                    <CardHeader className="bg-gray-50 pb-3">
+                      <CardTitle className="text-sm font-bold text-evo-red-700 uppercase tracking-wide">
+                        {phase.replace(/_/g, ' ')}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {items.slice(0, 3).map((item, itemIndex) => (
+                        <div key={itemIndex} className="space-y-2">
+                          <div className="flex items-start space-x-2">
+                            <span className="text-evo-teal-600 font-bold text-sm mt-0.5">✔︎</span>
+                            <div className="flex-1">
+                              <div className="font-medium text-xs text-gray-800">
+                                {item.system}
+                              </div>
+                              <div className="text-xs text-gray-600 mt-1">
+                                <span className="font-medium">Pain Point:</span> {item.addresses}
+                              </div>
+                              <div className="text-xs text-gray-500 mt-1">
+                                <span className="font-medium">Solution:</span> {item.business_value.replace(/"/g, '')}
+                              </div>
+                              <div className="text-xs text-evo-teal-600 font-medium mt-1">
+                                {item.implementation_priority}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-600 mt-1">
-                          <span className="font-medium">Pain Point:</span> {item.addresses}
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          <span className="font-medium">Current Address:</span> {item.business_value.replace(/"/g, '')}
-                        </div>
-                        <div className="text-xs text-evo-teal-600 font-medium mt-1">
-                          {item.implementation_priority}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </CardContent>
+                  </Card>
                 )
               ))}
             </div>
 
-            <div className="space-y-2 pt-3 border-t border-gray-200">
+            <div className="space-y-4 pt-4 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">
                 Next Steps
               </h3>
-              <div className="space-y-3">
-                {businessSummary.next_steps.slice(0, 3).map((step, index) => (
-                  <div key={index} className="flex items-start space-x-3">
-                    <span className="text-evo-teal-600 font-bold text-sm mt-0.5 min-w-[20px]">
-                      {index + 1}.
-                    </span>
-                    <span className="text-sm text-gray-700 leading-relaxed">
-                      {step}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <Card className="border border-gray-200">
+                <CardContent className="p-4 space-y-3">
+                  {businessSummary.next_steps.slice(0, 3).map((step, index) => (
+                    <div key={index} className="flex items-start space-x-3">
+                      <span className="text-evo-teal-600 font-bold text-sm mt-0.5 min-w-[20px]">
+                        {index + 1}.
+                      </span>
+                      <span className="text-sm text-gray-700 leading-relaxed">
+                        {step}
+                      </span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
             </div>
 
             <div className="pt-3 border-t border-gray-200">
