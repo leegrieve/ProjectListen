@@ -51,7 +51,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
           Let's prioritize your challenges
         </h2>
         <p className="text-gray-600">
-          If you had £100 to invest in solving these problems, how would you allocate it?
+          You have 100 pebbles. Distribute them across these jars to show where your priorities lie.
         </p>
       </div>
 
@@ -64,7 +64,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
               </h3>
               <div className="flex items-center space-x-2">
                 <span className="text-evo-red-500 font-semibold text-lg">
-                  £{allocations[painPoint] || 0}
+                  {allocations[painPoint] || 0} pebbles
                 </span>
               </div>
             </div>
@@ -78,8 +78,8 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
                 className="w-full"
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
-                <span>£0</span>
-                <span>£100</span>
+                <span>0</span>
+                <span>100</span>
               </div>
             </div>
           </div>
@@ -89,17 +89,17 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
       <div className="border-t border-gray-200 pt-6">
         <div className="flex items-center justify-between mb-4">
           <span className="text-lg font-semibold text-gray-900">
-            Total allocated:
+            Total pebbles placed:
           </span>
           <div className="text-right">
             <span className={`text-xl font-bold ${
               totalAllocated === 100 ? 'text-green-600' : 'text-red-500'
             }`}>
-              £{totalAllocated} / £100
+              {totalAllocated} / 100 pebbles
             </span>
             {totalAllocated < 100 && (
               <div className="text-sm text-amber-600 font-medium">
-                Remaining: £{100 - totalAllocated}
+                Remaining: {100 - totalAllocated} pebbles
               </div>
             )}
           </div>
@@ -109,7 +109,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
         {(isOverBudget || isUnderBudget) && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
             <p className="text-red-700 text-sm font-medium">
-              Your total must equal £100. Please adjust your sliders.
+              You must place all 100 pebbles. Please adjust your jars until none are left.
             </p>
           </div>
         )}
@@ -117,7 +117,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
         {totalAllocated === 0 && (
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
             <p className="text-gray-600 text-sm">
-              Please start allocating your £100 budget across the challenges above.
+              Please start placing your 100 pebbles across the jars above.
             </p>
           </div>
         )}
@@ -125,7 +125,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
         {totalAllocated === 100 && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
             <p className="text-green-700 text-sm font-medium">
-              ✓ Perfect! You've allocated the full £100 budget.
+              ✓ Perfect! You've placed all 100 pebbles in the jars.
             </p>
           </div>
         )}
@@ -139,7 +139,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
               : 'bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300'
           }`}
         >
-          {isValidAllocation ? 'Submit Budget Allocation' : 'Complete £100 Allocation to Continue'}
+          {isValidAllocation ? 'Submit Pebble Allocation' : 'Place All 100 Pebbles to Continue'}
         </Button>
       </div>
     </div>
