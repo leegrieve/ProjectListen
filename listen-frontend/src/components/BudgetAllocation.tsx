@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Slider } from '@/components/ui/slider'
 
 interface BudgetAllocationProps {
@@ -35,13 +34,6 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
     handleAllocationChange(painPoint, values[0])
   }
 
-  const handleInputChange = (painPoint: string, value: string) => {
-    const numValue = parseInt(value) || 0
-    if (numValue >= 0 && numValue <= 100) {
-      handleAllocationChange(painPoint, numValue)
-    }
-  }
-
   const handleSubmit = () => {
     if (onSubmit) {
       onSubmit(allocations)
@@ -71,15 +63,9 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
                 {painPoint}
               </h3>
               <div className="flex items-center space-x-2">
-                <span className="text-evo-red-500 font-semibold">£</span>
-                <Input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={allocations[painPoint] || 0}
-                  onChange={(e) => handleInputChange(painPoint, e.target.value)}
-                  className="w-20 text-center"
-                />
+                <span className="text-evo-red-500 font-semibold text-lg">
+                  £{allocations[painPoint] || 0}
+                </span>
               </div>
             </div>
             
@@ -105,26 +91,25 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
           <span className="text-lg font-semibold text-gray-900">
             Total allocated:
           </span>
-          <span className={`text-xl font-bold ${
-            totalAllocated === 100 ? 'text-green-600' : 'text-red-500'
-          }`}>
-            £{totalAllocated} / £100
-          </span>
+          <div className="text-right">
+            <span className={`text-xl font-bold ${
+              totalAllocated === 100 ? 'text-green-600' : 'text-red-500'
+            }`}>
+              £{totalAllocated} / £100
+            </span>
+            {totalAllocated < 100 && (
+              <div className="text-sm text-amber-600 font-medium">
+                Remaining: £{100 - totalAllocated}
+              </div>
+            )}
+          </div>
         </div>
         
         {/* Error messages for invalid totals */}
-        {isOverBudget && (
+        {(isOverBudget || isUnderBudget) && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
             <p className="text-red-700 text-sm font-medium">
-              You've allocated £{totalAllocated - 100} over budget. Please reduce your allocations.
-            </p>
-          </div>
-        )}
-        
-        {isUnderBudget && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-            <p className="text-amber-700 text-sm font-medium">
-              You have £{100 - totalAllocated} remaining to allocate. Please distribute the full £100.
+              Your total must equal £100. Please adjust your sliders.
             </p>
           </div>
         )}

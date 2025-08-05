@@ -138,8 +138,8 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
     const messageCount = conversationData.messages.filter(m => m.role === 'user').length
     const painPointCount = conversationData.discoveredPainPoints.length
     
-    if (messageCount >= 4 && 
-        painPointCount >= 4 && 
+    if (messageCount >= 2 && 
+        painPointCount >= 2 && 
         !showBudgetAllocation && 
         !budgetAllocationCompleted &&
         conversationData.messages.length > 0) {
