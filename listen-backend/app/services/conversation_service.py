@@ -283,6 +283,8 @@ Keep it concise, professional, and action-oriented. This is the conclusion of ou
         for pain_point in conversation.discovered_pain_points:
             pain_point_name = pain_point.replace('_', ' ').title()
             
+            conversation_insight = self._extract_conversation_insight(conversation, pain_point)
+            
             # Find matching challenges and solutions
             matching_challenges = [c for c in relevant_challenges 
                                  if any(keyword in c.get('customer_pain_point', '').lower() 
@@ -293,7 +295,7 @@ Keep it concise, professional, and action-oriented. This is the conclusion of ou
                 if challenge.get('product'):
                     solution = {
                         "product": challenge.get('product'),
-                        "how_it_helps": challenge.get('customer_pain_point', ''),
+                        "how_it_helps": conversation_insight,
                         "business_impact": challenge.get('challenge_category', ''),
                         "priority": self._calculate_priority(pain_point, challenge)
                     }
@@ -392,3 +394,39 @@ Keep it concise, professional, and action-oriented. This is the conclusion of ou
         next_steps.append("Develop custom implementation timeline based on business priorities")
         
         return next_steps
+    
+    def _extract_conversation_insight(self, conversation: ConversationState, pain_point: str) -> str:
+        """Extract actual conversation content related to a specific pain point"""
+        keywords = self.product_matcher.pain_point_keywords.get(pain_point, [])
+        
+        user_messages = [msg.content for msg in conversation.messages if msg.role == "user"]
+        full_conversation = " ".join(user_messages)
+        
+        relevant_snippets = []
+        sentences = full_conversation.split('.')
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if sentence and any(keyword.lower() in sentence.lower() for keyword in keywords):
+                if len(sentence) > 10:
+                    relevant_snippets.append(sentence)
+        
+        if relevant_snippets:
+            if len(relevant_snippets) == 1:
+                return f'"{relevant_snippets[0].strip()}"'
+            else:
+                combined = ". ".join(relevant_snippets[:2])
+                return f'"{combined.strip()}"'
+        
+        fallback_descriptions = {
+            "operational_efficiency": "Manual processes and paper-based systems causing inefficiencies",
+            "staff_scheduling": "Challenges with staff scheduling and workforce management",
+            "booking_management": "Issues with booking and reservation management",
+            "revenue_optimization": "Concerns about revenue optimization and profit maximization",
+            "seasonal_fluctuations": "Business volume variations during different seasons",
+            "customer_experience": "Customer service and satisfaction challenges",
+            "data_intelligence": "Need for better data insights and analytics",
+            "digital_transformation": "Requirements for digital modernization"
+        }
+        
+        return fallback_descriptions.get(pain_point, f"Challenges related to {pain_point.replace('_', ' ')}")
