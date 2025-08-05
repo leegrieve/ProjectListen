@@ -17,6 +17,7 @@ interface BusinessSummary {
     solutions: Array<{
       product: string
       how_it_helps: string
+      why_suggested: string
       business_impact: string
       priority: string
     }>
@@ -253,6 +254,9 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
                       </div>
                       <div className="text-xs text-gray-600 mt-1">
                         {solution.how_it_helps.replace(/"/g, '')}
+                      </div>
+                      <div className="text-xs text-evo-teal-700 mt-1 italic">
+                        {solution.why_suggested}
                       </div>
                       <div className="flex justify-between items-center mt-1">
                         <span className="text-xs text-evo-teal-600 font-medium">
