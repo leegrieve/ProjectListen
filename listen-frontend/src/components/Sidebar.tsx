@@ -295,7 +295,10 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
                           {item.system}
                         </div>
                         <div className="text-xs text-gray-600 mt-1">
-                          Addresses: {item.addresses}
+                          <span className="font-medium">Pain Point:</span> {item.addresses}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          <span className="font-medium">Current Address:</span> {item.business_value.replace(/"/g, '')}
                         </div>
                         <div className="text-xs text-evo-teal-600 font-medium mt-1">
                           {item.implementation_priority}
