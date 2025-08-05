@@ -293,9 +293,11 @@ Keep it concise, professional, and action-oriented. This is the conclusion of ou
             solutions = []
             for challenge in matching_challenges:
                 if challenge.get('product'):
+                    why_suggested = self._generate_solution_rationale(conversation_insight, challenge.get('product'), pain_point)
                     solution = {
                         "product": challenge.get('product'),
                         "how_it_helps": conversation_insight,
+                        "why_suggested": why_suggested,
                         "business_impact": challenge.get('challenge_category', ''),
                         "priority": self._calculate_priority(pain_point, challenge)
                     }
@@ -430,3 +432,32 @@ Keep it concise, professional, and action-oriented. This is the conclusion of ou
         }
         
         return fallback_descriptions.get(pain_point, f"Challenges related to {pain_point.replace('_', ' ')}")
+    
+    def _generate_solution_rationale(self, conversation_insight: str, product: str, pain_point: str) -> str:
+        """Generate a brief explanation of why this solution was suggested based on conversation content"""
+        clean_insight = conversation_insight.strip('"')
+        
+        rationale_templates = {
+            "operational_efficiency": f"Suggested because you mentioned manual processes that could be automated",
+            "staff_scheduling": f"Recommended to address the staffing challenges you described",
+            "booking_management": f"Proposed to replace the paper-based booking system you mentioned",
+            "revenue_optimization": f"Suggested to help maximize revenue during the busy periods you discussed",
+            "seasonal_fluctuations": f"Recommended to better manage the seasonal variations you experience",
+            "customer_experience": f"Proposed to improve customer service based on your current challenges",
+            "data_intelligence": f"Suggested to provide better insights into your business operations",
+            "digital_transformation": f"Recommended to modernize your current manual systems"
+        }
+        
+        if "paper" in clean_insight.lower():
+            if pain_point == "booking_management":
+                return "Suggested to replace your paper booking systems with digital solutions"
+            elif pain_point == "operational_efficiency":
+                return "Recommended to digitize your paper-based processes"
+        
+        if "staff" in clean_insight.lower() and pain_point == "staff_scheduling":
+            return "Recommended to address the staffing issues you mentioned"
+        
+        if "summer" in clean_insight.lower() and pain_point == "seasonal_fluctuations":
+            return "Suggested to help manage your busy summer periods more effectively"
+        
+        return rationale_templates.get(pain_point, f"Recommended based on the {pain_point.replace('_', ' ')} challenges discussed")
