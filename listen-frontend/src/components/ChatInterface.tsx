@@ -43,6 +43,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
   const [showPeerInsights, setShowPeerInsights] = useState(false)
   const [showGoalSelection, setShowGoalSelection] = useState(false)
   const [showBudgetAllocation, setShowBudgetAllocation] = useState(false)
+  const [showRecommendationsButton, setShowRecommendationsButton] = useState(false)
   const [budgetAllocationCompleted, setBudgetAllocationCompleted] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -110,21 +111,22 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
     if (conversationData.messages.length > 0 && 
         conversationData.messages[conversationData.messages.length - 1].role === 'assistant' &&
         !showBudgetAllocation && 
-        !budgetAllocationCompleted) {
+        !budgetAllocationCompleted &&
+        !showRecommendationsButton) {
       setTimeout(() => {
         inputRef.current?.focus()
       }, 100)
     }
-  }, [conversationData.messages, showBudgetAllocation, budgetAllocationCompleted])
+  }, [conversationData.messages, showBudgetAllocation, budgetAllocationCompleted, showRecommendationsButton])
 
   useEffect(() => {
     if (selectedIndustry && !showPeerInsights && !showGoalSelection && 
-        conversationData.messages.length === 0 && !showBudgetAllocation) {
+        conversationData.messages.length === 0 && !showBudgetAllocation && !showRecommendationsButton) {
       setTimeout(() => {
         inputRef.current?.focus()
       }, 100)
     }
-  }, [selectedIndustry, showPeerInsights, showGoalSelection, conversationData.messages.length, showBudgetAllocation])
+  }, [selectedIndustry, showPeerInsights, showGoalSelection, conversationData.messages.length, showBudgetAllocation, showRecommendationsButton])
 
   useEffect(() => {
     if (budgetAllocationCompleted) {
@@ -139,13 +141,14 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
     const painPointCount = conversationData.discoveredPainPoints.length
     
     if (messageCount >= 2 && 
-        painPointCount >= 2 && 
+        painPointCount >= 5 && 
         !showBudgetAllocation && 
         !budgetAllocationCompleted &&
+        !showRecommendationsButton &&
         conversationData.messages.length > 0) {
-      setShowBudgetAllocation(true)
+      setShowRecommendationsButton(true)
     }
-  }, [conversationData.messages, conversationData.discoveredPainPoints, showBudgetAllocation, budgetAllocationCompleted])
+  }, [conversationData.messages, conversationData.discoveredPainPoints, showBudgetAllocation, budgetAllocationCompleted, showRecommendationsButton])
 
   const handleIndustrySelect = (industryId: string) => {
     setSelectedIndustry(industryId)
@@ -163,6 +166,11 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
         sendMessage(industryMessage)
       }, 100)
     }
+  }
+
+  const handleSeeRecommendationsClick = () => {
+    setShowRecommendationsButton(false)
+    setShowBudgetAllocation(true)
   }
 
   const transformPainPointsForBudget = (painPoints: string[]): string[] => {
@@ -575,6 +583,20 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
             </div>
           </div>
         ))}
+
+        {showRecommendationsButton && (
+          <div className="my-8 text-center">
+            <Button 
+              onClick={handleSeeRecommendationsClick}
+              className="evo-button px-8 py-3 text-lg"
+            >
+              See Recommendations
+            </Button>
+            <p className="text-sm text-gray-600 mt-2">
+              Ready to see your personalized solution recommendations based on {conversationData.discoveredPainPoints.length} identified challenges
+            </p>
+          </div>
+        )}
 
         {showBudgetAllocation && (
           <div className="my-8">
