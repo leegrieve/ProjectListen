@@ -278,36 +278,46 @@ Keep it concise, professional, and action-oriented. This is the conclusion of ou
         
         relevant_challenges = self.product_matcher.get_relevant_challenges(conversation.discovered_pain_points)
         
-        # Structure pain points with solutions
+        # Structure pain points with solutions - group by pain point to avoid duplicates
         pain_point_solutions = []
+        processed_pain_points = set()
+        
         for pain_point in conversation.discovered_pain_points:
+            if pain_point in processed_pain_points:
+                continue
+                
             pain_point_name = pain_point.replace('_', ' ').title()
-            
             conversation_insight = self._extract_conversation_insight(conversation, pain_point)
             
-            # Find matching challenges and solutions
+            # Find matching challenges and solutions for this specific pain point
             matching_challenges = [c for c in relevant_challenges 
                                  if any(keyword in c.get('customer_pain_point', '').lower() 
                                        for keyword in self.product_matcher.pain_point_keywords.get(pain_point, []))]
             
             solutions = []
+            seen_products = set()
+            
             for challenge in matching_challenges:
-                if challenge.get('product'):
-                    why_suggested = self._generate_solution_rationale(conversation_insight, challenge.get('product'), pain_point)
+                product = challenge.get('product')
+                if product and product not in seen_products:
+                    why_suggested = self._generate_solution_rationale(conversation_insight, product, pain_point)
                     solution = {
-                        "product": challenge.get('product'),
+                        "product": product,
                         "how_it_helps": conversation_insight,
                         "why_suggested": why_suggested,
                         "business_impact": challenge.get('challenge_category', ''),
                         "priority": self._calculate_priority(pain_point, challenge)
                     }
                     solutions.append(solution)
+                    seen_products.add(product)
             
-            pain_point_solutions.append({
-                "pain_point": pain_point_name,
-                "category": pain_point,
-                "solutions": solutions
-            })
+            if solutions:  # Only add pain point if it has solutions
+                pain_point_solutions.append({
+                    "pain_point": pain_point_name,
+                    "category": pain_point,
+                    "solutions": solutions
+                })
+                processed_pain_points.add(pain_point)
         
         delivery_plan = self._create_delivery_plan(pain_point_solutions)
         
