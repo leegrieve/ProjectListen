@@ -238,12 +238,12 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-3">
-              <div className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                Identified Pain Points & Solutions
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                Your Priorities
+              </h3>
               
               {businessSummary.identified_pain_points.map((painPoint, index) => (
-                <div key={index} className="space-y-2">
+                <div key={index} className="space-y-3">
                   <div className="font-medium text-sm text-evo-red-900">
                     {painPoint.pain_point}
                   </div>
@@ -256,9 +256,9 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
                         {solution.how_it_helps.replace(/"/g, '')}
                       </div>
                       <div className="text-xs text-evo-teal-700 mt-1 italic">
-                        {solution.why_suggested}
+                        ✓ {solution.why_suggested}
                       </div>
-                      <div className="flex justify-between items-center mt-1">
+                      <div className="flex justify-between items-center mt-2">
                         <span className="text-xs text-evo-teal-600 font-medium">
                           {solution.business_impact}
                         </span>
@@ -279,9 +279,9 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
             </div>
 
             <div className="space-y-3 pt-3 border-t border-gray-200">
-              <div className="text-xs font-medium text-gray-700 uppercase tracking-wide">
-                Recommended Flight Path
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                Your Custom Flight Path
+              </h3>
               
               {Object.entries(businessSummary.recommended_flight_path).map(([phase, items]) => (
                 items.length > 0 && (
@@ -311,15 +311,21 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
             </div>
 
             <div className="space-y-2 pt-3 border-t border-gray-200">
-              <div className="text-xs font-medium text-gray-700 uppercase tracking-wide">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">
                 Next Steps
+              </h3>
+              <div className="space-y-3">
+                {businessSummary.next_steps.slice(0, 3).map((step, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <span className="text-evo-teal-600 font-bold text-sm mt-0.5 min-w-[20px]">
+                      {index + 1}.
+                    </span>
+                    <span className="text-sm text-gray-700 leading-relaxed">
+                      {step}
+                    </span>
+                  </div>
+                ))}
               </div>
-              {businessSummary.next_steps.slice(0, 3).map((step, index) => (
-                <div key={index} className="text-xs text-gray-600 flex items-start space-x-2">
-                  <span className="text-evo-red-500 font-bold">•</span>
-                  <span>{step}</span>
-                </div>
-              ))}
             </div>
 
             <div className="pt-3 border-t border-gray-200">

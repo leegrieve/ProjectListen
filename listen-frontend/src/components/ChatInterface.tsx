@@ -250,11 +250,11 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
       return 'Measurable business impact with specific ROI tracking'
     }
     
-    let recommendationsContent = `Thank you for prioritizing your challenges. Based on your budget allocation, I can see what matters most to your business.\n\n`
+    let recommendationsContent = `Thank you for prioritizing your challenges. Based on your pebble allocation, I can see what matters most to your business.\n\n`
     
     const highestPriority = topPriorities[0]
     if (highestPriority) {
-      recommendationsContent += `Based on your £${highestPriority[1]} investment priority in ${highestPriority[0]}, we're focusing first on the area that matters most to you.\n\n`
+      recommendationsContent += `Based on your ${highestPriority[1]} pebbles priority in ${highestPriority[0]}, we're focusing first on the area that matters most to you.\n\n`
     }
     
     recommendationsContent += `**Recommended Flight Path:**\n\nBased on your priorities, here's your personalized implementation roadmap:\n\n`
@@ -311,13 +311,13 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
           usedSolutions.add(solutionId)
           const timeframe = phaseNumber === 1 ? 'Months 1-3' : phaseNumber === 2 ? 'Months 2-4' : 'Months 3-6'
           
-          recommendationsContent += `**Phase ${phaseNumber}: ${solution.title} (${timeframe}) - £${amount} priority**\n• ${solution.solution}\n• ${solution.description}\n• ${solution.benefits}\n• ${extractSpecificROI(solutionKey)}\n\n`
+          recommendationsContent += `**Phase ${phaseNumber}: ${solution.title} (${timeframe}) - ${amount} pebbles priority**\n• ${solution.solution}\n• ${solution.description}\n• ${solution.benefits}\n• ${extractSpecificROI(solutionKey)}\n\n`
           phaseNumber++
         }
       }
     })
     
-    recommendationsContent += `**Your Investment Priorities:**\n`
+    recommendationsContent += `**Your Priorities:**\n`
     topPriorities.forEach(([challenge, amount]) => {
       const solutionKey = Object.keys(challengeToSolution).find(key => challenge.includes(key))
       if (solutionKey) {
@@ -327,7 +327,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
                           solutionKey.includes('Booking') || solutionKey.includes('Revenue') ? 'on your booking and revenue challenges' : 
                           'with digital transformation solutions'
         
-        recommendationsContent += `✓ ${challenge} (£${amount}) - ${phaseText} ${actionText}\n`
+        recommendationsContent += `✓ ${challenge} (${amount} pebbles) - ${phaseText} ${actionText}\n`
       }
     })
     
