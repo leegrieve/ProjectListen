@@ -1,7 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
 from datetime import datetime
+import logging
+import traceback
 
 from .models import ChatRequest, ChatResponse, ConversationSummary
 from .services.conversation_service import ConversationService
@@ -48,8 +50,28 @@ def chat(request: ChatRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/restart-conversation")
-def restart_conversation(request: dict):
+def restart_conversation(request: dict, http_request: Request):
     """Restart conversation while preserving discovered pain points"""
+    
+    timestamp = datetime.now().isoformat()
+    client_ip = http_request.client.host if http_request.client else "unknown"
+    user_agent = http_request.headers.get("user-agent", "unknown")
+    referer = http_request.headers.get("referer", "unknown")
+    
+    stack_trace = traceback.format_stack()
+    
+    print(f"""
+=== RESTART CONVERSATION CALL DETECTED ===
+Timestamp: {timestamp}
+Client IP: {client_ip}
+User Agent: {user_agent}
+Referer: {referer}
+Conversation ID: {request.get("conversation_id")}
+Call Stack (last 5 frames):
+{(''.join(stack_trace[-5:]))}
+=== END RESTART CALL LOG ===
+""")
+    
     try:
         old_conversation_id = request.get("conversation_id")
         if not old_conversation_id:
@@ -62,12 +84,15 @@ def restart_conversation(request: dict):
         if not new_conversation:
             raise HTTPException(status_code=500, detail="Failed to create new conversation")
         
+        print(f"RESTART SUCCESS: {old_conversation_id} -> {new_conversation_id}, preserved {len(new_conversation.discovered_pain_points)} pain points")
+        
         return {
             "new_conversation_id": new_conversation_id,
             "preserved_pain_points": new_conversation.discovered_pain_points,
             "preserved_context": new_conversation.customer_context
         }
     except Exception as e:
+        print(f"RESTART ERROR for {request.get('conversation_id')}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/conversation/{conversation_id}")
@@ -193,20 +218,38 @@ def export_all_conversations():
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.get("/api/conversations/{conversation_id}/business-summary")
-def get_business_summary(conversation_id: str):
+def get_business_summary(conversation_id: str, http_request: Request):
     """Get structured business summary for Access Group takeaway"""
+    
+    timestamp = datetime.now().isoformat()
+    client_ip = http_request.client.host if http_request.client else "unknown"
+    user_agent = http_request.headers.get("user-agent", "unknown")
+    referer = http_request.headers.get("referer", "unknown")
+    
+    print(f"""
+=== BUSINESS SUMMARY CALL DETECTED ===
+Timestamp: {timestamp}
+Client IP: {client_ip}
+User Agent: {user_agent}
+Referer: {referer}
+Conversation ID: {conversation_id}
+=== END BUSINESS SUMMARY CALL LOG ===
+""")
+    
     try:
         summary = conversation_service.get_business_summary(conversation_id)
         
         if not summary:
+            print(f"BUSINESS SUMMARY ERROR: Conversation {conversation_id} not found")
             raise HTTPException(status_code=404, detail="Conversation not found")
         
+        print(f"BUSINESS SUMMARY SUCCESS: Generated for {conversation_id}")
         return summary
     
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Error in business summary endpoint: {e}")
+        print(f"BUSINESS SUMMARY ERROR for {conversation_id}: {e}")
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="Internal server error")

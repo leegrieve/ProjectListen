@@ -104,7 +104,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
     if (onSetRestartHandler) {
       onSetRestartHandler(handleRestartConversation)
     }
-  }, [onSetRestartHandler, handleRestartConversation])
+  }, [onSetRestartHandler])
 
   const industryOptions: IndustryOption[] = [
     {

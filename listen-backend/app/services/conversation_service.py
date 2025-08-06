@@ -12,7 +12,10 @@ load_dotenv()
 
 class ConversationService:
     def __init__(self):
-        self.client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        api_key = os.getenv("ANTHROPIC_API_KEY")
+        print(f"DEBUG: ANTHROPIC_API_KEY length: {len(api_key) if api_key else 'None'}")
+        print(f"DEBUG: ANTHROPIC_API_KEY starts with: {api_key[:10] if api_key else 'None'}...")
+        self.client = Anthropic(api_key=api_key)
         self.product_matcher = ProductMatcher()
         self.conversations: Dict[str, ConversationState] = {}
         self.system_prompt = self._build_system_prompt()
