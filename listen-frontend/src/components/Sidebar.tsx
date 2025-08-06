@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Target, Package, TrendingUp, FileText, Download } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 
 interface BusinessSummary {
@@ -58,7 +58,7 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false, onRestar
     return painPoint.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
   }
 
-  const fetchBusinessSummary = async () => {
+  const fetchBusinessSummary = useCallback(async () => {
     if (!conversationData.conversationId || conversationData.discoveredPainPoints.length === 0) {
       return
     }
@@ -81,13 +81,13 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false, onRestar
     } finally {
       setIsLoadingSummary(false)
     }
-  }
+  }, [conversationData.conversationId, conversationData.discoveredPainPoints.length])
 
   useEffect(() => {
     if (conversationData.conversationId && conversationData.discoveredPainPoints.length > 0) {
       fetchBusinessSummary()
     }
-  }, [conversationData.conversationId, conversationData.discoveredPainPoints.length])
+  }, [conversationData.conversationId, conversationData.discoveredPainPoints.length, fetchBusinessSummary])
 
   const getFlightPathStage = () => {
     if (conversationData.recommendedProducts.length > 0) return 4
