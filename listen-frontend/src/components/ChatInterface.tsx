@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Send, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -52,7 +52,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const handleRestartConversation = async () => {
+  const handleRestartConversation = useCallback(async () => {
     if (!conversationData.conversationId) return
     
     try {
@@ -98,7 +98,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
         budgetAllocations: undefined
       })
     }
-  }
+  }, [conversationData.conversationId, updateConversationData])
 
   useEffect(() => {
     if (onSetRestartHandler) {
@@ -206,7 +206,7 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
         conversationData.messages.length > 0) {
       setShowRecommendationsButton(true)
     }
-  }, [conversationData.messages, conversationData.discoveredPainPoints, showBudgetAllocation, budgetAllocationCompleted, showRecommendationsButton])
+  }, [conversationData.messages, conversationData.discoveredPainPoints, showBudgetAllocation, budgetAllocationCompleted])
 
   const handleIndustrySelect = (industryId: string) => {
     setSelectedIndustry(industryId)

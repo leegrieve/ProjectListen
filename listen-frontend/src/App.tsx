@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import ChatInterface from './components/ChatInterface'
 import Sidebar from './components/Sidebar'
 import './App.css'
@@ -42,13 +42,13 @@ function App() {
   const [budgetAllocationCompleted, setBudgetAllocationCompleted] = useState(false)
   const [restartHandler, setRestartHandler] = useState<(() => void) | null>(null)
 
-  const updateConversationData = (data: Partial<ConversationData>) => {
+  const updateConversationData = useCallback((data: Partial<ConversationData>) => {
     setConversationData(prev => {
       const updated = { ...prev, ...data }
       localStorage.setItem('projectlisten-conversation', JSON.stringify(updated))
       return updated
     })
-  }
+  }, [])
 
   return (
     <div className="h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col overflow-hidden">
