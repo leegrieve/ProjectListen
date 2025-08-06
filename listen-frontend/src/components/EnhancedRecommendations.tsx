@@ -130,15 +130,16 @@ const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = ({
   const phases = getPhases()
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          Your Personalized Recommendations
-        </h2>
-        <p className="text-gray-600">
-          Based on your pebble allocation, here's your custom implementation roadmap
-        </p>
-      </div>
+    <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border-2 border-gray-200 shadow-lg">
+      <div className="space-y-6">
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            Your Personalized Recommendations
+          </h2>
+          <p className="text-gray-600">
+            Based on your pebble allocation, here's your custom implementation roadmap
+          </p>
+        </div>
 
       <Card className="evo-card">
         <CardHeader>
@@ -152,7 +153,7 @@ const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = ({
               <div className="flex justify-between items-center">
                 <span className="font-medium text-gray-900">{challenge}</span>
                 <span className="text-sm font-semibold text-evo-red-600">
-                  {amount} pebbles
+                  {amount} 🪨
                 </span>
               </div>
               <Progress 
@@ -160,7 +161,7 @@ const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = ({
                 className="h-2 bg-red-100"
               />
               <div className="text-xs text-gray-500">
-                {amount}/100 pebbles allocated
+                {amount}/100 🪨 allocated
               </div>
             </div>
           ))}
@@ -175,18 +176,18 @@ const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = ({
         {phases.map((phase) => (
           <Card key={phase.number} className="evo-card border-l-4 border-l-evo-teal-500">
             <CardHeader className="bg-gray-50">
-              <CardTitle className="text-lg font-bold text-gray-900">
-                Phase {phase.number} – {phase.title} ({phase.pebbles} pebbles, {phase.timeframe})
+              <CardTitle className="text-xl font-bold text-gray-900">
+                Phase {phase.number} – {phase.title} ({phase.pebbles} 🪨, {phase.timeframe})
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-3">
-              <div className="space-y-2">
-                <div className="flex items-start space-x-2">
-                  <span className="text-evo-teal-600 font-bold text-sm mt-0.5">✔︎</span>
-                  <span className="font-medium text-gray-900">{phase.solution}</span>
+              <div className="space-y-3">
+                <div className="flex items-start space-x-3">
+                  <span className="text-evo-teal-600 font-bold text-base mt-0.5">✔</span>
+                  <span className="font-semibold text-gray-900">{phase.solution}</span>
                 </div>
-                <div className="flex items-start space-x-2">
-                  <span className="text-evo-teal-600 font-bold text-sm mt-0.5">✔︎</span>
+                <div className="flex items-start space-x-3">
+                  <span className="text-evo-teal-600 font-bold text-base mt-0.5">✔</span>
                   <span className="text-gray-700">{phase.description}</span>
                 </div>
               </div>
@@ -235,6 +236,7 @@ const EnhancedRecommendations: React.FC<EnhancedRecommendationsProps> = ({
           </p>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

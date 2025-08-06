@@ -51,7 +51,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
           Let's prioritize your challenges
         </h2>
         <p className="text-gray-600">
-          You have 100 pebbles. Distribute them across these jars to show where your priorities lie.
+          You have 100 🪨. Distribute them across these jars to show where your priorities lie.
         </p>
       </div>
 
@@ -64,7 +64,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
               </h3>
               <div className="flex items-center space-x-2">
                 <span className="text-evo-red-500 font-semibold text-lg">
-                  {allocations[painPoint] || 0} pebbles
+                  {allocations[painPoint] || 0} 🪨
                 </span>
               </div>
             </div>
@@ -89,17 +89,17 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
       <div className="border-t border-gray-200 pt-6">
         <div className="flex items-center justify-between mb-4">
           <span className="text-lg font-semibold text-gray-900">
-            Total pebbles placed:
+            Total 🪨 placed:
           </span>
           <div className="text-right">
             <span className={`text-xl font-bold ${
               totalAllocated === 100 ? 'text-green-600' : 'text-red-500'
             }`}>
-              {totalAllocated} / 100 pebbles
+              {totalAllocated} / 100 🪨
             </span>
             {totalAllocated < 100 && (
               <div className="text-sm text-amber-600 font-medium">
-                Remaining: {100 - totalAllocated} pebbles
+                Remaining: {100 - totalAllocated} 🪨
               </div>
             )}
           </div>
@@ -109,7 +109,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
         {(isOverBudget || isUnderBudget) && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
             <p className="text-red-700 text-sm font-medium">
-              You must place all 100 pebbles. Please adjust your jars until none are left.
+              You must place all 100 🪨. Please adjust your jars until none are left.
             </p>
           </div>
         )}
@@ -117,7 +117,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
         {totalAllocated === 0 && (
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
             <p className="text-gray-600 text-sm">
-              Please start placing your 100 pebbles across the jars above.
+              Please start placing your 100 🪨 across the jars above.
             </p>
           </div>
         )}
@@ -125,7 +125,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
         {totalAllocated === 100 && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
             <p className="text-green-700 text-sm font-medium">
-              ✓ Perfect! You've placed all 100 pebbles in the jars.
+              ✓ Perfect! You've placed all 100 🪨 in the jars.
             </p>
           </div>
         )}
@@ -139,7 +139,7 @@ const BudgetAllocation = ({ painPoints, onSubmit }: BudgetAllocationProps) => {
               : 'bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300'
           }`}
         >
-          {isValidAllocation ? 'Submit Pebble Allocation' : 'Place All 100 Pebbles to Continue'}
+          {isValidAllocation ? 'Submit 🪨 Allocation' : 'Place All 100 🪨 to Continue'}
         </Button>
       </div>
     </div>

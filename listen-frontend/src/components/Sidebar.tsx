@@ -288,7 +288,7 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
             </div>
 
             <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">
                 Your Custom Flight Path
               </h3>
               
@@ -296,7 +296,7 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
                 items.length > 0 && (
                   <Card key={phase} className="border-l-4 border-l-evo-teal-500">
                     <CardHeader className="bg-gray-50 pb-3">
-                      <CardTitle className="text-sm font-bold text-evo-red-700 uppercase tracking-wide">
+                      <CardTitle className="text-lg font-bold text-evo-red-700 uppercase tracking-wide">
                         {phase.replace(/_/g, ' ')}
                       </CardTitle>
                     </CardHeader>
@@ -329,7 +329,7 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
             </div>
 
             <div className="space-y-4 pt-4 border-t border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">
                 Next Steps
               </h3>
               <Card className="border border-gray-200">
