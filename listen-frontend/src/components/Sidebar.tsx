@@ -46,9 +46,10 @@ interface ConversationData {
 interface SidebarProps {
   conversationData: ConversationData
   budgetAllocationCompleted?: boolean
+  onRestartConversation?: () => void
 }
 
-const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: SidebarProps) => {
+const Sidebar = ({ conversationData, budgetAllocationCompleted = false, onRestartConversation }: SidebarProps) => {
   const [businessSummary, setBusinessSummary] = useState<BusinessSummary | null>(null)
   const [isLoadingSummary, setIsLoadingSummary] = useState(false)
   const [summaryError, setSummaryError] = useState<string | null>(null)
@@ -221,6 +222,23 @@ const Sidebar = ({ conversationData, budgetAllocationCompleted = false }: Sideba
                 <span className="font-medium">{conversationData.recommendedProducts.length}</span>
               </div>
             </div>
+            
+            {conversationData.messages.length > 5 && onRestartConversation && (
+              <div className="pt-3 border-t border-gray-200">
+                <Button
+                  onClick={onRestartConversation}
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-xs"
+                >
+                  Start Fresh (Keep Insights)
+                </Button>
+                <p className="text-xs text-gray-500 mt-1 text-center">
+                  Restart conversation while preserving discovered pain points
+                </p>
+              </div>
+            )}
+            
             <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
               This summary can be shared with your Access Group account manager
             </div>

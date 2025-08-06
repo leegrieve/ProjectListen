@@ -47,6 +47,29 @@ def chat(request: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/restart-conversation")
+def restart_conversation(request: dict):
+    """Restart conversation while preserving discovered pain points"""
+    try:
+        old_conversation_id = request.get("conversation_id")
+        if not old_conversation_id:
+            raise HTTPException(status_code=400, detail="conversation_id required")
+        
+        new_conversation_id = conversation_service.restart_conversation_with_context(old_conversation_id)
+        
+        new_conversation = conversation_service.get_conversation(new_conversation_id)
+        
+        if not new_conversation:
+            raise HTTPException(status_code=500, detail="Failed to create new conversation")
+        
+        return {
+            "new_conversation_id": new_conversation_id,
+            "preserved_pain_points": new_conversation.discovered_pain_points,
+            "preserved_context": new_conversation.customer_context
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/api/conversation/{conversation_id}")
 def get_conversation(conversation_id: str):
     """Get conversation history"""

@@ -24,6 +24,7 @@ interface ChatInterfaceProps {
   conversationData: ConversationData
   updateConversationData: (data: Partial<ConversationData>) => void
   onBudgetAllocationComplete?: () => void
+  onSetRestartHandler?: (handler: () => void) => void
 }
 
 interface IndustryOption {
@@ -38,7 +39,7 @@ interface GoalOption {
   description: string
 }
 
-const ChatInterface = ({ conversationData, updateConversationData, onBudgetAllocationComplete }: ChatInterfaceProps) => {
+const ChatInterface = ({ conversationData, updateConversationData, onBudgetAllocationComplete, onSetRestartHandler }: ChatInterfaceProps) => {
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [selectedIndustry, setSelectedIndustry] = useState<string | null>(null)
@@ -50,6 +51,60 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
   const [showEnhancedRecommendations, setShowEnhancedRecommendations] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleRestartConversation = async () => {
+    if (!conversationData.conversationId) return
+    
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/restart-conversation`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          conversation_id: conversationData.conversationId
+        }),
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to restart conversation')
+      }
+      
+      const data = await response.json()
+      
+      setSelectedIndustry(null)
+      setShowPeerInsights(false)
+      setShowGoalSelection(false)
+      setShowBudgetAllocation(false)
+      setShowRecommendationsButton(false)
+      setBudgetAllocationCompleted(false)
+      setShowEnhancedRecommendations(false)
+      
+      updateConversationData({
+        conversationId: data.new_conversation_id,
+        messages: [],
+        discoveredPainPoints: data.preserved_pain_points,
+        recommendedProducts: [],
+        budgetAllocations: undefined
+      })
+      
+    } catch (error) {
+      console.error('Error restarting conversation:', error)
+      updateConversationData({
+        conversationId: null,
+        messages: [],
+        discoveredPainPoints: [],
+        recommendedProducts: [],
+        budgetAllocations: undefined
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (onSetRestartHandler) {
+      onSetRestartHandler(handleRestartConversation)
+    }
+  }, [onSetRestartHandler, handleRestartConversation])
 
   const industryOptions: IndustryOption[] = [
     {

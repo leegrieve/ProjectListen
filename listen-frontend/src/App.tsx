@@ -18,16 +18,36 @@ interface ConversationData {
 }
 
 function App() {
-  const [conversationData, setConversationData] = useState<ConversationData>({
-    conversationId: null,
-    messages: [],
-    discoveredPainPoints: [],
-    recommendedProducts: []
+  const [conversationData, setConversationData] = useState<ConversationData>(() => {
+    const saved = localStorage.getItem('projectlisten-conversation')
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        parsed.messages = parsed.messages.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }))
+        return parsed
+      } catch (e) {
+        console.error('Error loading saved conversation:', e)
+      }
+    }
+    return {
+      conversationId: null,
+      messages: [],
+      discoveredPainPoints: [],
+      recommendedProducts: []
+    }
   })
   const [budgetAllocationCompleted, setBudgetAllocationCompleted] = useState(false)
+  const [restartHandler, setRestartHandler] = useState<(() => void) | null>(null)
 
   const updateConversationData = (data: Partial<ConversationData>) => {
-    setConversationData(prev => ({ ...prev, ...data }))
+    setConversationData(prev => {
+      const updated = { ...prev, ...data }
+      localStorage.setItem('projectlisten-conversation', JSON.stringify(updated))
+      return updated
+    })
   }
 
   return (
@@ -52,12 +72,14 @@ function App() {
             conversationData={conversationData}
             updateConversationData={updateConversationData}
             onBudgetAllocationComplete={() => setBudgetAllocationCompleted(true)}
+            onSetRestartHandler={setRestartHandler}
           />
         </div>
         <div className="w-80 border-l border-gray-200 flex-shrink-0">
           <Sidebar 
             conversationData={conversationData} 
             budgetAllocationCompleted={budgetAllocationCompleted}
+            onRestartConversation={restartHandler || undefined}
           />
         </div>
       </main>

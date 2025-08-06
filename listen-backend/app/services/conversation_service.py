@@ -170,6 +170,48 @@ Make sure to mention that they can download their business summary report right 
 Keep it concise, professional, and action-oriented. This is the conclusion of our discovery session.
 """
 
+    def _estimate_tokens(self, text: str) -> int:
+        """Estimate token count using character approximation (4 chars ≈ 1 token)"""
+        return len(text) // 4
+    
+    def _manage_context_window(self, messages: List[Dict], system_prompt: str) -> List[Dict]:
+        """Truncate older messages to stay within context window limits"""
+        MAX_CONTEXT_TOKENS = 180000
+        system_tokens = self._estimate_tokens(system_prompt)
+        
+        total_tokens = system_tokens
+        managed_messages = []
+        
+        for message in reversed(messages):
+            message_tokens = self._estimate_tokens(message["content"])
+            if total_tokens + message_tokens > MAX_CONTEXT_TOKENS:
+                break
+            total_tokens += message_tokens
+            managed_messages.insert(0, message)
+        
+        return managed_messages
+
+    def restart_conversation_with_context(self, old_conversation_id: str) -> str:
+        """Create a new conversation preserving pain points and customer context from old one"""
+        old_conversation = self.conversations.get(old_conversation_id)
+        new_conversation_id = str(uuid.uuid4())
+        now = datetime.now()
+        
+        preserved_pain_points = old_conversation.discovered_pain_points if old_conversation else []
+        preserved_context = old_conversation.customer_context if old_conversation else {}
+        
+        self.conversations[new_conversation_id] = ConversationState(
+            conversation_id=new_conversation_id,
+            messages=[],
+            discovered_pain_points=preserved_pain_points.copy(),
+            customer_context=preserved_context.copy(),
+            recommended_products=[],
+            created_at=now,
+            updated_at=now
+        )
+        
+        return new_conversation_id
+
     def process_message(self, conversation_id: str, user_message: str) -> str:
         """Process user message and return AI response"""
         try:
@@ -213,18 +255,29 @@ Keep it concise, professional, and action-oriented. This is the conclusion of ou
             if should_wrap_up:
                 system_prompt = self.system_prompt + self._build_wrap_up_prompt(conversation)
             
+            managed_messages = self._manage_context_window(messages, system_prompt)
+            
             try:
                 response = self.client.messages.create(
                     model="claude-3-5-sonnet-20241022",
                     max_tokens=1000,
                     system=system_prompt,
-                    messages=messages
+                    messages=managed_messages
                 )
                 
                 ai_response = response.content[0].text
             except Exception as e:
+                error_msg = str(e).lower()
+                if "rate limit" in error_msg:
+                    ai_response = "I'm experiencing high demand right now. Please wait a moment and try again."
+                elif "token" in error_msg or "context" in error_msg:
+                    ai_response = "Our conversation has become quite detailed. Let me help you with a fresh start while keeping your discovered insights."
+                elif "network" in error_msg or "connection" in error_msg:
+                    ai_response = "I'm having trouble connecting right now. Please check your connection and try again."
+                else:
+                    ai_response = "I encountered a technical issue. Your conversation progress has been saved - please try again."
+                
                 print(f"Error calling Claude API: {e}")
-                raise e
             
             ai_msg = ChatMessage(
                 role="assistant",
