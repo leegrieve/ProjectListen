@@ -190,9 +190,9 @@ The bot provides a complete guided experience from initial contact to final reco
 
 ## 🌐 Live Deployment
 
-- **Frontend**: https://ai-discovery-bot-au2m09sv.devinapps.com/
-- **Backend API**: https://app-jeunfzgn.fly.dev/
-- **Status**: Production-ready for executive demonstrations
+- **Frontend**: https://project-listen-summary-app-snt4bkn0.devinapps.com/
+- **Backend API**: https://app-epmommrs.fly.dev/
+- **Status**: Production-ready for executive demonstrations with automatic bold formatting for business metrics
 
 ## 📊 Business Value
 
@@ -286,7 +286,16 @@ Potential improvements and extensions:
 
 ## 🆕 Recent Updates (Latest Release)
 
-### Complete User Journey Implementation (NEW)
+### Automatic Bold Formatting for Business Metrics (NEW)
+- **Visual Emphasis**: Business metrics and calculations automatically appear in bold formatting
+- **Time Calculations**: "**4 hours every 3 days**", "**40 hours a month**", "**2 weeks of training**"
+- **Revenue Calculations**: "**£5,000 in lost revenue**", "**15% cost savings**", "**£200 per month**"
+- **Percentage Impacts**: "**30% efficiency gain**", "**25% reduction in errors**", "**50% faster processing**"
+- **Executive Demo Ready**: Financial impact immediately visible for compelling presentations
+- **ReactMarkdown Integration**: Seamless markdown rendering for assistant messages only
+- **System Prompt Enhancement**: AI instructed to automatically bold quantified business metrics
+
+### Complete User Journey Implementation
 - **Welcome Screen**: Professional industry selection with Access EVO branding
 - **Peer Insights Display**: Industry-specific statistics from UK hospitality data sources
 - **Primary Goal Selection**: Four strategic options (Grow Revenue, Cut Costs, Enhance Experience, Streamline Operations)
