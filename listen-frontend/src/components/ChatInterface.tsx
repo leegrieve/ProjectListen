@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import BudgetAllocation from './BudgetAllocation'
 import EnhancedRecommendations from './EnhancedRecommendations'
+import ReactMarkdown from 'react-markdown'
 import peerInsightsData from '../data/peerInsights.json'
 
 interface Message {
@@ -499,7 +500,13 @@ const ChatInterface = ({ conversationData, updateConversationData, onBudgetAlloc
                   : 'bg-white border border-gray-200 text-gray-900 hover:shadow-md transition-shadow'
               }`}
             >
-              <p className="whitespace-pre-wrap">{message.content}</p>
+              {message.role === 'assistant' ? (
+                <div className="whitespace-pre-wrap">
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
+              ) : (
+                <p className="whitespace-pre-wrap">{message.content}</p>
+              )}
               <p className={`text-xs mt-2 ${
                 message.role === 'user' ? 'text-evo-red-100' : 'text-gray-500'
               }`}>
